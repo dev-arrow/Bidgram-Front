@@ -51,7 +51,7 @@ export function ProfileCard({ profile }: { profile: Profile }) {
         <div
           className={cn(
             'relative flex h-8 items-center pr-3.5 pl-6 text-[10px] font-bold tracking-widest uppercase text-white',
-            inUse ? 'bg-emerald-500' : 'bg-muted-foreground/70',
+            inUse ? 'bg-red-500' : 'bg-emerald-500',
           )}
           style={{ clipPath: 'polygon(0 50%, 22% 0, 100% 0, 100% 100%, 22% 100%)' }}
         >
