@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import Link from 'next/link'
 import {
   BadgeCheck,
   Briefcase,
@@ -10,7 +11,6 @@ import {
   Table as TableIcon,
   Zap,
 } from 'lucide-react'
-import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import {
@@ -79,10 +79,7 @@ export function ProfilesView() {
             </ToggleGroupItem>
           </ToggleGroup>
 
-          <Button
-            className="h-10"
-            onClick={() => toast.success('New profile', { description: 'Profile builder coming soon.' })}
-          >
+          <Button className="h-10" render={<Link href="/profile/new" />} nativeButton={false}>
             <Plus data-icon="inline-start" />
             New profile
           </Button>

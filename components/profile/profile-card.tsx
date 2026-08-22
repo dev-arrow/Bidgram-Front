@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import {
   BadgeCheck,
   Briefcase,
@@ -182,7 +183,13 @@ export function ProfileCard({ profile }: { profile: Profile }) {
             <BadgeCheck data-icon="inline-start" />
             <span>{inUse ? 'Using profile' : 'Use profile'}</span>
           </Button>
-          <Button variant="outline" size="icon" aria-label={`Edit ${profile.name}`}>
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label={`Edit ${profile.name}`}
+            render={<Link href={`/profile/${profile.id}/edit`} />}
+            nativeButton={false}
+          >
             <Pencil />
           </Button>
           <Button variant="outline" size="icon" aria-label={`Delete ${profile.name}`}>
