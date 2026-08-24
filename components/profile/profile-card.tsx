@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import {
   BadgeCheck,
   Briefcase,
@@ -13,7 +14,6 @@ import {
   Table as TableIcon,
   Trash2,
 } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -43,11 +43,24 @@ export function ProfileCard({ profile }: { profile: Profile }) {
   return (
     <Card
       className={cn(
-        'group flex h-full flex-col gap-0 overflow-hidden py-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10',
+        'group relative flex h-full flex-col gap-0 overflow-hidden py-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10',
         inUse ? 'border-primary/45' : 'border-border',
       )}
     >
-      <CardHeader className="px-5 pt-5">
+      {/* Shipping-tag status indicator, pinned top-right */}
+      <div className="pointer-events-none absolute right-3 top-3 z-10">
+        <div
+          className={cn(
+            'relative flex h-8 items-center pr-3.5 pl-6 text-[10px] font-bold tracking-widest uppercase text-white',
+            inUse ? 'bg-red-500' : 'bg-emerald-500',
+          )}
+          style={{ clipPath: 'polygon(0 50%, 22% 0, 100% 0, 100% 100%, 22% 100%)' }}
+        >
+          <span className="absolute top-1/2 left-2.5 size-1.5 -translate-y-1/2 rounded-full bg-white/85 ring-1 ring-black/15" />
+          {inUse ? 'In use' : 'Idle'}
+        </div>
+      </div>
+      <CardHeader className="px-5 pt-5 pr-24">
         <div className="flex items-center gap-3">
           <span className="grid size-10 shrink-0 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
             {profile.initials}
@@ -57,12 +70,6 @@ export function ProfileCard({ profile }: { profile: Profile }) {
             <p className="truncate text-xs text-muted-foreground">{profile.title}</p>
           </div>
         </div>
-        {inUse ? (
-          <Badge className="rounded-full bg-emerald-500/12 text-emerald-700 ring-1 ring-emerald-500/25 hover:bg-emerald-500/12">
-            <BadgeCheck data-icon="inline-start" />
-            Using
-          </Badge>
-        ) : null}
       </CardHeader>
 
       <CardContent className="flex flex-1 flex-col gap-4 px-5 pt-4">
@@ -176,7 +183,13 @@ export function ProfileCard({ profile }: { profile: Profile }) {
             <BadgeCheck data-icon="inline-start" />
             <span>{inUse ? 'Using profile' : 'Use profile'}</span>
           </Button>
-          <Button variant="outline" size="icon" aria-label={`Edit ${profile.name}`}>
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label={`Edit ${profile.name}`}
+            render={<Link href={`/profile/${profile.id}/edit`} />}
+            nativeButton={false}
+          >
             <Pencil />
           </Button>
           <Button variant="outline" size="icon" aria-label={`Delete ${profile.name}`}>

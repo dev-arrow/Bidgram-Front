@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { BadgeCheck, Pencil, Star, Trash2, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -106,6 +107,8 @@ export function ProfileTable({ profiles }: { profiles: Profile[] }) {
                     variant="outline"
                     size="icon-sm"
                     aria-label={`Edit ${profile.name}`}
+                    render={<Link href={`/profile/${profile.id}/edit`} />}
+                    nativeButton={false}
                   >
                     <Pencil />
                   </Button>
