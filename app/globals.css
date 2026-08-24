@@ -136,6 +136,8 @@
   --animate-rise: rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-fade-up: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-float: float 7s ease-in-out infinite;
+  --animate-pop-in: pop-in 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-slide-down: slide-down 180ms cubic-bezier(0.16, 1, 0.3, 1) both;
 
   @keyframes rise {
     from {
@@ -159,6 +161,16 @@
     }
   }
 
+  @keyframes pop-in {
+    from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @keyframes slide-down {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
   @keyframes float {
     0%,
     100% {
@@ -168,4 +180,16 @@
       transform: translateY(-12px) rotate(2deg);
     }
   }
+}
+
+@layer utilities {
+  .interactive-surface { transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 220ms ease, border-color 220ms ease, background-color 220ms ease; }
+  .interactive-surface:hover { transform: translateY(-2px); box-shadow: 0 12px 28px -18px oklch(0.24 0.035 258 / 0.35); }
+  .interactive-surface:active { transform: translateY(0) scale(0.99); }
+  .motion-pop-in { animation: pop-in 220ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .motion-slide-down { animation: slide-down 180ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: 1ms !important; }
 }

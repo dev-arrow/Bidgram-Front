@@ -90,7 +90,7 @@ export function ProfilesView() {
         {stats.map((stat, index) => (
           <div
             key={stat.label}
-            className="flex animate-fade-up items-center gap-4 rounded-2xl border border-border bg-card p-5 transition-shadow duration-300 hover:shadow-md"
+            className="interactive-surface flex animate-fade-up items-center gap-4 rounded-2xl border border-border bg-card p-5"
             style={{ animationDelay: `${index * 70}ms` }}
           >
             <span className="grid size-11 shrink-0 place-items-center rounded-full bg-accent text-accent-foreground">
@@ -121,7 +121,7 @@ export function ProfilesView() {
           {filtered.map((profile, index) => (
             <div
               key={profile.id}
-              className="animate-fade-up"
+              className="motion-pop-in"
               style={{ animationDelay: `${index * 80}ms` }}
             >
               <ProfileCard profile={profile} />
