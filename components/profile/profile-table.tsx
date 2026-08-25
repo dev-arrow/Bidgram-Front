@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { BadgeCheck, Pencil, Trash2, Zap } from 'lucide-react'
+import { BadgeCheck, Pencil, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Table,
@@ -12,6 +12,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { useProfilesContext } from '@/components/profile/profiles-context'
+import { DeleteProfileButton } from '@/components/profile/delete-profile-button'
 import { WeekAxis, WeekBarChart } from '@/components/profile/week-bar-chart'
 import { weekTotal, type Profile } from '@/lib/profiles'
 import { cn } from '@/lib/utils'
@@ -92,9 +93,7 @@ function ProfileRow({ profile }: { profile: Profile }) {
           >
             <Pencil />
           </Button>
-          <Button variant="outline" size="icon-sm" aria-label={`Delete ${profile.name}`}>
-            <Trash2 />
-          </Button>
+          <DeleteProfileButton id={profile.id} name={profile.name} size="icon-sm" />
         </div>
       </TableCell>
     </TableRow>

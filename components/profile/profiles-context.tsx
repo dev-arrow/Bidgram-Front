@@ -7,6 +7,7 @@ type ProfilesContextValue = {
   profiles: Profile[]
   activeCount: number
   toggleInUse: (id: string) => void
+  deleteProfile: (id: string) => void
 }
 
 const ProfilesContext = createContext<ProfilesContextValue | null>(null)
@@ -26,13 +27,17 @@ export function ProfilesProvider({ children }: { children: ReactNode }) {
     )
   }
 
+  const deleteProfile = (id: string) => {
+    setProfiles((prev) => prev.filter((profile) => profile.id !== id))
+  }
+
   const activeCount = useMemo(
     () => profiles.filter((profile) => profile.inUse).length,
     [profiles],
   )
 
   return (
-    <ProfilesContext.Provider value={{ profiles, activeCount, toggleInUse }}>
+    <ProfilesContext.Provider value={{ profiles, activeCount, toggleInUse, deleteProfile }}>
       {children}
     </ProfilesContext.Provider>
   )

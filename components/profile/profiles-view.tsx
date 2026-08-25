@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import {
   BadgeCheck,
@@ -23,6 +23,36 @@ import { ProfileCard } from '@/components/profile/profile-card'
 import { useProfilesContext } from '@/components/profile/profiles-context'
 import { ProfileTable } from '@/components/profile/profile-table'
 import { totalApplications } from '@/lib/profiles'
+
+/**
+ * Animated integer counter that eases from 0 to the target value once on mount.
+ * Respects reduced-motion by snapping straight to the final value.
+ */
+function CountUp({ value }: { value: number }) {
+  const [display, setDisplay] = useState(0)
+  const frame = useRef<number | null>(null)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setDisplay(value)
+      return
+    }
+    const duration = 900
+    const start = performance.now()
+    const tick = (now: number) => {
+      const progress = Math.min(1, (now - start) / duration)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setDisplay(Math.round(eased * value))
+      if (progress < 1) frame.current = requestAnimationFrame(tick)
+    }
+    frame.current = requestAnimationFrame(tick)
+    return () => {
+      if (frame.current) cancelAnimationFrame(frame.current)
+    }
+  }, [value])
+
+  return <span className="font-mono text-2xl font-bold tracking-tight tabular-nums">{display}</span>
+}
 
 export function ProfilesView() {
   const { profiles: allProfiles, activeCount } = useProfilesContext()
@@ -84,18 +114,19 @@ export function ProfilesView() {
         </div>
       </div>
 
-      <div className="grid shrink-0 animate-fade-up gap-4 sm:grid-cols-3">
+      <div className="grid shrink-0 gap-4 sm:grid-cols-3">
         {stats.map((stat, index) => (
           <div
             key={stat.label}
-            className="interactive-surface flex animate-fade-up items-center gap-4 rounded-2xl border border-border bg-card p-5"
+            className="spotlight interactive-surface group/stat relative flex animate-fade-up items-center gap-4 overflow-hidden rounded-2xl border border-border bg-card p-5"
             style={{ animationDelay: `${index * 70}ms` }}
           >
-            <span className="grid size-11 shrink-0 place-items-center rounded-full bg-accent text-accent-foreground">
-              <stat.icon className="size-5" aria-hidden="true" />
+            <span className="relative grid size-11 shrink-0 place-items-center overflow-hidden rounded-full bg-accent text-accent-foreground">
+              <stat.icon className="size-5 transition-transform duration-300 group-hover/stat:scale-110" aria-hidden="true" />
+              <span className="pointer-events-none absolute inset-0 -translate-x-[120%] bg-gradient-to-r from-transparent via-primary/25 to-transparent transition-transform duration-700 ease-out group-hover/stat:translate-x-[120%]" />
             </span>
             <span className="flex flex-col">
-              <span className="font-mono text-2xl font-bold tracking-tight">{stat.value}</span>
+              <CountUp value={stat.value} />
               <span className="text-xs text-muted-foreground">{stat.label}</span>
             </span>
           </div>

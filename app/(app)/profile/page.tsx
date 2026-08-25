@@ -19,9 +19,14 @@ export default function ProfilePage() {
 
       <ProfilesProvider>
         <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-6 py-6 lg:px-8">
-          <div className="flex shrink-0 animate-fade-up flex-col gap-3 rounded-2xl border border-primary/20 bg-accent/60 p-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-start gap-3.5">
-              <span className="grid size-10 shrink-0 place-items-center rounded-full bg-card text-primary shadow-sm">
+          <div className="relative flex shrink-0 animate-fade-up flex-col gap-3 overflow-hidden rounded-2xl border border-primary/20 bg-accent/60 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-y-0 left-0 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-card/40 to-transparent animate-sheen"
+            />
+            <div className="relative flex items-start gap-3.5">
+              <span className="relative grid size-10 shrink-0 place-items-center rounded-full bg-card text-primary shadow-sm">
+                <span className="pointer-events-none absolute inset-0 rounded-full bg-primary/20 animate-pulse-ring" aria-hidden="true" />
                 <Zap className="size-5" aria-hidden="true" />
               </span>
               <div className="flex flex-col gap-0.5">

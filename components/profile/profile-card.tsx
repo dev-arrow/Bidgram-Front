@@ -12,7 +12,6 @@ import {
   Phone,
   Pencil,
   Table as TableIcon,
-  Trash2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -32,6 +31,7 @@ import {
 } from '@/components/ui/table'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useProfilesContext } from '@/components/profile/profiles-context'
+import { DeleteProfileButton } from '@/components/profile/delete-profile-button'
 import { WeekAxis, WeekBarChart } from '@/components/profile/week-bar-chart'
 import { WEEK_DAYS_LONG, weekTotal, type Profile } from '@/lib/profiles'
 import { cn } from '@/lib/utils'
@@ -62,10 +62,21 @@ export function ProfileCard({ profile }: { profile: Profile }) {
           {inUse ? 'In use' : 'Idle'}
         </div>
       </div>
+      {/* Animated accent bar that draws in on hover */}
+      <span
+        aria-hidden="true"
+        className={cn(
+          'pointer-events-none absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-gradient-to-r from-primary via-primary/60 to-transparent transition-transform duration-500 ease-out group-hover:scale-x-100',
+          inUse && 'scale-x-100',
+        )}
+      />
       <CardHeader className="px-5 pt-5 pr-24">
         <div className="flex items-center gap-3">
-          <span className="grid size-10 shrink-0 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+          <span className="relative grid size-10 shrink-0 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
             {profile.initials}
+            {inUse ? (
+              <span className="pointer-events-none absolute inset-0 rounded-full bg-primary/40 animate-pulse-ring" aria-hidden="true" />
+            ) : null}
           </span>
           <div className="flex min-w-0 flex-1 flex-col">
             <CardTitle className="truncate text-base font-bold">{profile.name}</CardTitle>
@@ -194,9 +205,7 @@ export function ProfileCard({ profile }: { profile: Profile }) {
           >
             <Pencil />
           </Button>
-          <Button variant="outline" size="icon" aria-label={`Delete ${profile.name}`}>
-            <Trash2 />
-          </Button>
+          <DeleteProfileButton id={profile.id} name={profile.name} size="icon" />
         </div>
       </CardFooter>
     </Card>

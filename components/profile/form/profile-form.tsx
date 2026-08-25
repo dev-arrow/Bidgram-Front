@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Check } from 'lucide-react'
@@ -23,7 +23,24 @@ import {
   ApplicationDefaultsSection,
   PreferencesSection,
 } from '@/components/profile/form/application-sections'
+import {
+  FormSectionNav,
+  type FormSectionLink,
+} from '@/components/profile/form/form-section-nav'
 import type { Profile } from '@/lib/profiles'
+
+const FORM_SECTIONS: FormSectionLink[] = [
+  { id: 'section-resume', label: 'Resume' },
+  { id: 'section-details', label: 'Profile details' },
+  { id: 'section-address', label: 'Address & links' },
+  { id: 'section-experience', label: 'Work experience' },
+  { id: 'section-education', label: 'Education' },
+  { id: 'section-certifications', label: 'Certifications' },
+  { id: 'section-languages', label: 'Languages' },
+  { id: 'section-references', label: 'References' },
+  { id: 'section-defaults', label: 'Application defaults' },
+  { id: 'section-preferences', label: 'Preferences' },
+]
 
 export type ProfileDefaults = {
   firstName: string
@@ -54,6 +71,7 @@ function toDefaults(profile?: Profile): ProfileDefaults {
 
 export function ProfileForm({ profile }: { profile?: Profile }) {
   const router = useRouter()
+  const scrollRef = useRef<HTMLDivElement>(null)
   const [pending, setPending] = useState(false)
   const isEditing = Boolean(profile)
   const defaults = toDefaults(profile)
@@ -72,8 +90,8 @@ export function ProfileForm({ profile }: { profile?: Profile }) {
   }
 
   return (
-    <form onSubmit={onSubmit}>
-      <header className="sticky top-0 z-10 flex flex-col gap-3 border-b border-border bg-background/85 px-6 py-5 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between lg:px-8">
+    <form onSubmit={onSubmit} className="flex min-h-0 flex-1 flex-col">
+      <header className="z-10 flex shrink-0 flex-col gap-3 border-b border-border bg-background/85 px-6 py-5 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between lg:px-8">
         <div className="flex items-center gap-3">
           <Button
             type="button"
