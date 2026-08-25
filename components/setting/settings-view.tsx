@@ -2,7 +2,6 @@
 
 import { useState, type ComponentType, type ReactNode } from 'react'
 import {
-  Bell,
   Bot,
   Globe,
   KeyRound,
@@ -19,8 +18,19 @@ import { toast } from 'sonner'
 import { useLanguage } from '@/components/language-provider'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Field, FieldLabel } from '@/components/ui/field'
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { Spinner } from '@/components/ui/spinner'
 import {
   Select,
   SelectContent,
@@ -29,9 +39,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Slider } from '@/components/ui/slider'
 import { Switch } from '@/components/ui/switch'
-import { cn } from '@/lib/utils'
+import { isLocaleId, LOCALES } from '@/lib/i18n'
 
 const TIMEZONES = [
   'UTC',
@@ -77,27 +86,60 @@ export function SettingsView() {
   const [email, setEmail] = useState('jane@example.com')
   const [timezone, setTimezone] = useState<string>('Europe/Berlin')
 
-  // Bidding
-  const [autoApply, setAutoApply] = useState(true)
-  const [dailyCap, setDailyCap] = useState<number[]>([25])
-  const [minMatch, setMinMatch] = useState<number[]>([70])
-  const [skipApplied, setSkipApplied] = useState(true)
-
   // AI
   const [tone, setTone] = useState<string>('Professional')
   const [language, setLanguage] = useState<string>('English (US)')
-  const [reviewBeforeSend, setReviewBeforeSend] = useState(false)
-
-  // Notifications
-  const [emailDigest, setEmailDigest] = useState(true)
-  const [bidFailures, setBidFailures] = useState(true)
-  const [productNews, setProductNews] = useState(false)
 
   // Security
   const [twoFactor, setTwoFactor] = useState(false)
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false)
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [passwordError, setPasswordError] = useState<string | null>(null)
+  const [changingPassword, setChangingPassword] = useState(false)
 
   function save() {
     toast.success('Settings saved', { description: 'Your preferences apply to new bids right away.' })
+  }
+
+  function resetPasswordForm() {
+    setCurrentPassword('')
+    setNewPassword('')
+    setConfirmPassword('')
+    setPasswordError(null)
+  }
+
+  async function handleChangePassword(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setPasswordError(null)
+
+    if (!currentPassword) {
+      setPasswordError('Enter your current password.')
+      return
+    }
+    if (newPassword.length < 8) {
+      setPasswordError('New password must be at least 8 characters.')
+      return
+    }
+    if (newPassword === currentPassword) {
+      setPasswordError('New password must be different from your current password.')
+      return
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError('New password and confirmation do not match.')
+      return
+    }
+
+    setChangingPassword(true)
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 700))
+      toast.success('Password updated', { description: 'Use your new password next time you sign in.' })
+      setPasswordDialogOpen(false)
+      resetPasswordForm()
+    } finally {
+      setChangingPassword(false)
+    }
   }
 
   return (
@@ -159,58 +201,44 @@ export function SettingsView() {
       </SettingsSection>
 
       <SettingsSection
-        icon={Zap}
-        title="Bidding"
-        description="How aggressively Bidgram applies on your behalf."
+        icon={Globe}
+        title={t.settingsLanguageTitle}
+        description={t.settingsLanguageDescription}
         style={{ animationDelay: '70ms' }}
       >
-        <div className="flex flex-col gap-5">
-          <ToggleRow
-            id="auto-apply"
-            label="Auto-apply from the extension"
-            description="Submit applications automatically for postings that clear your match threshold."
-            checked={autoApply}
-            onCheckedChange={setAutoApply}
-          />
-
-          <div
-            className={cn(
-              'flex flex-col gap-6 border-t border-border pt-5 transition-opacity',
-              !autoApply && 'pointer-events-none opacity-50',
-            )}
+        <Field className="sm:max-w-sm">
+          <FieldLabel htmlFor="interface-language" className="text-sm font-semibold">
+            {t.interfaceLanguage}
+          </FieldLabel>
+          <Select
+            value={locale}
+            onValueChange={(value) => {
+              if (isLocaleId(value)) setLocale(value)
+            }}
           >
-            <SliderRow
-              label="Daily bid cap"
-              value={dailyCap[0]}
-              display={`${dailyCap[0]} bids / day`}
-              min={5}
-              max={100}
-              step={5}
-              onChange={setDailyCap}
-              hint="Hard stop. Bidgram never exceeds this, even with matches queued."
-            />
-            <SliderRow
-              label="Minimum match score"
-              value={minMatch[0]}
-              display={`${minMatch[0]}%`}
-              min={40}
-              max={95}
-              step={5}
-              onChange={setMinMatch}
-              hint="Postings below this score are skipped instead of applied to."
-            />
-          </div>
-
-          <div className="border-t border-border pt-5">
-            <ToggleRow
-              id="skip-applied"
-              label="Skip companies you've already applied to"
-              description="Avoids duplicate applications within a 30-day window."
-              checked={skipApplied}
-              onCheckedChange={setSkipApplied}
-            />
-          </div>
-        </div>
+            <SelectTrigger id="interface-language" className="h-9 w-full">
+              <SelectValue placeholder="Select a language">
+                {(value: string) => {
+                  const option = LOCALES.find((item) => item.id === value)
+                  if (!option) return 'Select a language'
+                  return option.nativeLabel === option.label
+                    ? option.label
+                    : `${option.nativeLabel} (${option.label})`
+                }}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent alignItemWithTrigger={false}>
+              <SelectGroup>
+                {LOCALES.map((option) => (
+                  <SelectItem key={option.id} value={option.id}>
+                    {option.nativeLabel} ({option.label})
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <p className="text-xs text-muted-foreground">{t.settingsLanguageHint}</p>
+        </Field>
       </SettingsSection>
 
       <SettingsSection
@@ -259,57 +287,6 @@ export function SettingsView() {
                 </SelectContent>
               </Select>
             </Field>
-          </div>
-
-          <div className="border-t border-border pt-5">
-            <ToggleRow
-              id="review-before-send"
-              label="Hold applications for my review"
-              description="Queue each generated application for approval instead of submitting it."
-              checked={reviewBeforeSend}
-              onCheckedChange={setReviewBeforeSend}
-            />
-          </div>
-
-          <p className="flex items-start gap-2 rounded-xl border border-border bg-muted/30 px-3.5 py-3 text-xs leading-relaxed text-muted-foreground">
-            <Globe className="mt-px size-3.5 shrink-0 text-primary" aria-hidden="true" />
-            Prompt text always wins over these defaults. Edit them on the{' '}
-            <span className="font-semibold text-foreground">Prompt</span> page.
-          </p>
-        </div>
-      </SettingsSection>
-
-      <SettingsSection
-        icon={Bell}
-        title="Notifications"
-        description="What Bidgram emails you about."
-        style={{ animationDelay: '210ms' }}
-      >
-        <div className="flex flex-col gap-5">
-          <ToggleRow
-            id="email-digest"
-            label="Daily digest"
-            description="One email summarising the bids submitted and any replies received."
-            checked={emailDigest}
-            onCheckedChange={setEmailDigest}
-          />
-          <div className="border-t border-border pt-5">
-            <ToggleRow
-              id="bid-failures"
-              label="Bid failures"
-              description="Alert me immediately when an application fails to submit."
-              checked={bidFailures}
-              onCheckedChange={setBidFailures}
-            />
-          </div>
-          <div className="border-t border-border pt-5">
-            <ToggleRow
-              id="product-news"
-              label="Product news"
-              description="Occasional updates about new Bidgram features."
-              checked={productNews}
-              onCheckedChange={setProductNews}
-            />
           </div>
         </div>
       </SettingsSection>
@@ -383,10 +360,72 @@ export function SettingsView() {
                 <p className="text-sm font-semibold">Password</p>
                 <p className="text-xs text-muted-foreground">Last changed 4 months ago</p>
               </div>
-              <Button variant="outline" size="sm">
-                <KeyRound data-icon="inline-start" />
-                Change password
-              </Button>
+              <Dialog
+                open={passwordDialogOpen}
+                onOpenChange={(open) => {
+                  setPasswordDialogOpen(open)
+                  if (!open) resetPasswordForm()
+                }}
+              >
+                <DialogTrigger render={<Button variant="outline" size="sm" />}>
+                  <KeyRound data-icon="inline-start" />
+                  Change password
+                </DialogTrigger>
+                <DialogContent>
+                  <form onSubmit={handleChangePassword}>
+                    <DialogHeader>
+                      <DialogTitle>Change password</DialogTitle>
+                      <DialogDescription>
+                        Choose a new password with at least 8 characters.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <FieldGroup className="mt-4">
+                      <Field data-invalid={passwordError ? true : undefined}>
+                        <FieldLabel htmlFor="current-password">Current password</FieldLabel>
+                        <Input
+                          id="current-password"
+                          type="password"
+                          autoComplete="current-password"
+                          value={currentPassword}
+                          aria-invalid={passwordError ? true : undefined}
+                          onChange={(event) => setCurrentPassword(event.target.value)}
+                        />
+                      </Field>
+                      <Field>
+                        <FieldLabel htmlFor="new-password">New password</FieldLabel>
+                        <Input
+                          id="new-password"
+                          type="password"
+                          autoComplete="new-password"
+                          value={newPassword}
+                          onChange={(event) => setNewPassword(event.target.value)}
+                        />
+                        <FieldDescription>At least 8 characters.</FieldDescription>
+                      </Field>
+                      <Field>
+                        <FieldLabel htmlFor="confirm-password">Confirm new password</FieldLabel>
+                        <Input
+                          id="confirm-password"
+                          type="password"
+                          autoComplete="new-password"
+                          value={confirmPassword}
+                          onChange={(event) => setConfirmPassword(event.target.value)}
+                        />
+                      </Field>
+                      {passwordError ? <FieldError>{passwordError}</FieldError> : null}
+                    </FieldGroup>
+                    <DialogFooter className="mt-2">
+                      <DialogClose render={<Button type="button" variant="outline" />}>
+                        Cancel
+                      </DialogClose>
+                      <Button type="submit" disabled={changingPassword}>
+                        {changingPassword ? <Spinner data-icon="inline-start" /> : <KeyRound data-icon="inline-start" />}
+                        Update password
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </div>
@@ -493,42 +532,3 @@ function ToggleRow({
   )
 }
 
-function SliderRow({
-  label,
-  value,
-  display,
-  min,
-  max,
-  step,
-  onChange,
-  hint,
-}: {
-  label: string
-  value: number
-  display: string
-  min: number
-  max: number
-  step: number
-  onChange: (value: number[]) => void
-  hint: string
-}) {
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-sm font-semibold">{label}</p>
-        <Badge variant="secondary" className="font-mono tabular-nums">
-          {display}
-        </Badge>
-      </div>
-      <Slider
-        value={[value]}
-        min={min}
-        max={max}
-        step={step}
-        onValueChange={(next) => onChange(next as number[])}
-        aria-label={label}
-      />
-      <p className="text-xs leading-relaxed text-muted-foreground">{hint}</p>
-    </div>
-  )
-}

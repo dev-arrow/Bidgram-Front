@@ -6,6 +6,7 @@ import {
   CreditCard,
   FileText,
   LayoutTemplate,
+  LogOut,
   MessageSquareHeart,
   Settings,
   User,
@@ -13,6 +14,15 @@ import {
   Wand2,
 } from 'lucide-react'
 import { BrandLogo } from '@/components/brand-logo'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { CURRENT_USAGE } from '@/lib/billing-data'
 import { cn } from '@/lib/utils'
 
@@ -35,15 +45,54 @@ export function MobileNav() {
         <Link href="/profile" className="w-fit">
           <BrandLogo tone="dark" size={34} />
         </Link>
-        <Link
-          href="/billing"
-          className="flex items-center gap-2 rounded-full border border-sidebar-border bg-sidebar-accent/50 px-3 py-1.5"
-        >
-          <Wallet className="size-3.5 text-sidebar-foreground/60" aria-hidden="true" />
-          <span className="text-sm font-bold tabular-nums">
-            ${CURRENT_USAGE.creditUsd.toFixed(2)}
-          </span>
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/billing"
+            className="flex items-center gap-2 rounded-full border border-sidebar-border bg-sidebar-accent/50 px-3 py-1.5"
+          >
+            <Wallet className="size-3.5 text-sidebar-foreground/60" aria-hidden="true" />
+            <span className="text-sm font-bold tabular-nums">
+              ${CURRENT_USAGE.creditUsd.toFixed(2)}
+            </span>
+          </Link>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              className="grid size-9 shrink-0 place-items-center rounded-full bg-sidebar-primary text-xs font-bold text-sidebar-primary-foreground"
+              aria-label="Account menu"
+            >
+              JD
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" sideOffset={8}>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>
+                  <span className="flex flex-col">
+                    <span className="text-sm font-semibold text-foreground">Jane Doe</span>
+                    <span className="text-xs text-muted-foreground">Bidder</span>
+                  </span>
+                </DropdownMenuLabel>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem render={<Link href="/profile" />}>
+                  <User />
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem render={<Link href="/setting" />}>
+                  <Settings />
+                  Settings
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem render={<Link href="/login" />} variant="destructive">
+                  <LogOut />
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
       <nav aria-label="Main" className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1">
         {items.map((item) => {

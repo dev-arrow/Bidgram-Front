@@ -17,22 +17,24 @@ import {
   Wand2,
 } from 'lucide-react'
 import { BrandLogo } from '@/components/brand-logo'
+import { useLanguage } from '@/components/language-provider'
 import { Button } from '@/components/ui/button'
 import { CURRENT_USAGE } from '@/lib/billing-data'
 import { cn } from '@/lib/utils'
 
 const navItems = [
-  { label: 'Profile', href: '/profile', icon: User },
-  { label: 'Application Review', href: '/application-review', icon: FileText },
-  { label: 'Templates', href: '/templates', icon: LayoutTemplate },
-  { label: 'Prompt', href: '/prompt', icon: Wand2 },
-  { label: 'Billing', href: '/billing', icon: CreditCard },
-  { label: 'Setting', href: '/setting', icon: Settings },
-  { label: 'Feedback', href: '/feedback', icon: MessageSquareHeart },
+  { href: '/profile', icon: User },
+  { href: '/application-review', icon: FileText },
+  { href: '/templates', icon: LayoutTemplate },
+  { href: '/prompt', icon: Wand2 },
+  { href: '/billing', icon: CreditCard },
+  { href: '/setting', icon: Settings },
+  { href: '/feedback', icon: MessageSquareHeart },
 ]
 
 export function AppSidebar() {
   const pathname = usePathname()
+  const { t } = useLanguage()
   const balanceLabel = `$${CURRENT_USAGE.creditUsd.toFixed(2)}`
 
   return (
@@ -63,7 +65,7 @@ export function AppSidebar() {
                 )}
                 aria-hidden="true"
               />
-              {item.label}
+              {t.nav[item.href] ?? item.href}
             </Link>
           )
         })}
@@ -80,7 +82,7 @@ export function AppSidebar() {
           </span>
           <span className="flex flex-1 flex-col">
             <span className="text-[11px] font-semibold uppercase tracking-wide text-sidebar-foreground/55">
-              Balance
+              {t.balance}
             </span>
             <span className="text-lg font-extrabold leading-tight tabular-nums">
               {balanceLabel}
