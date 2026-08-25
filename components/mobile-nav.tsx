@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import {
   CreditCard,
   FileText,
+  LayoutTemplate,
   MessageSquareHeart,
   Settings,
   User,
@@ -16,6 +17,7 @@ import { cn } from '@/lib/utils'
 const items = [
   { label: 'Profile', href: '/profile', icon: User },
   { label: 'Review', href: '/application-review', icon: FileText },
+  { label: 'Templates', href: '/templates', icon: LayoutTemplate },
   { label: 'Prompt', href: '/prompt', icon: Wand2 },
   { label: 'Billing', href: '/billing', icon: CreditCard },
   { label: 'Setting', href: '/setting', icon: Settings },

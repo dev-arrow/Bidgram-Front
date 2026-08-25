@@ -44,7 +44,7 @@ export function ProfilesView() {
   }, [query, allProfiles])
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-6">
+    <div className="flex flex-1 flex-col gap-6">
       <div className="flex shrink-0 animate-fade-up flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <InputGroup className="h-10 sm:max-w-xs">
           <InputGroupAddon>
@@ -102,7 +102,7 @@ export function ProfilesView() {
         ))}
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <div className="flex-1">
         {filtered.length === 0 ? (
           <Empty className="rounded-2xl border border-dashed border-border bg-card">
             <EmptyHeader>

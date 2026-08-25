@@ -18,7 +18,7 @@ export default function ProfilePage() {
       />
 
       <ProfilesProvider>
-        <div className="flex min-h-0 flex-1 flex-col gap-6 px-6 py-6 lg:px-8">
+        <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-6 py-6 lg:px-8">
           <div className="flex shrink-0 animate-fade-up flex-col gap-3 rounded-2xl border border-primary/20 bg-accent/60 p-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-3.5">
               <span className="grid size-10 shrink-0 place-items-center rounded-full bg-card text-primary shadow-sm">

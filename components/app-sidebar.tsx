@@ -6,6 +6,7 @@ import {
   ChevronsUpDown,
   CreditCard,
   FileText,
+  LayoutTemplate,
   LogOut,
   MessageSquareHeart,
   Settings,
@@ -20,6 +21,7 @@ import { cn } from '@/lib/utils'
 const navItems = [
   { label: 'Profile', href: '/profile', icon: User },
   { label: 'Application Review', href: '/application-review', icon: FileText },
+  { label: 'Templates', href: '/templates', icon: LayoutTemplate },
   { label: 'Prompt', href: '/prompt', icon: Wand2 },
   { label: 'Billing', href: '/billing', icon: CreditCard },
   { label: 'Setting', href: '/setting', icon: Settings },
