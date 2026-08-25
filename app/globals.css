@@ -180,6 +180,54 @@
       transform: translateY(-12px) rotate(2deg);
     }
   }
+
+  --animate-aurora: aurora 18s ease-in-out infinite;
+  --animate-aurora-slow: aurora 26s ease-in-out infinite reverse;
+  --animate-marquee: marquee 26s linear infinite;
+  --animate-caret: caret 1s steps(1) infinite;
+  --animate-sheen: sheen 2.6s ease-in-out infinite;
+  --animate-orbit: orbit 14s linear infinite;
+  --animate-scan: scan 3.4s ease-in-out infinite;
+  --animate-pulse-ring: pulse-ring 2.4s ease-out infinite;
+  --animate-spin-slow: spin 9s linear infinite;
+
+  @keyframes aurora {
+    0% { transform: translate3d(0, 0, 0) scale(1); }
+    33% { transform: translate3d(6%, -8%, 0) scale(1.15); }
+    66% { transform: translate3d(-7%, 6%, 0) scale(0.95); }
+    100% { transform: translate3d(0, 0, 0) scale(1); }
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  @keyframes caret {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  @keyframes sheen {
+    0% { transform: translateX(-120%) skewX(-18deg); }
+    60%, 100% { transform: translateX(320%) skewX(-18deg); }
+  }
+
+  @keyframes orbit {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes scan {
+    0%, 100% { transform: translateY(-120%); opacity: 0; }
+    45% { opacity: 1; }
+    50% { transform: translateY(120%); opacity: 0.9; }
+  }
+
+  @keyframes pulse-ring {
+    0% { transform: scale(0.9); opacity: 0.5; }
+    100% { transform: scale(1.7); opacity: 0; }
+  }
 }
 
 @layer utilities {
@@ -188,6 +236,42 @@
   .interactive-surface:active { transform: translateY(0) scale(0.99); }
   .motion-pop-in { animation: pop-in 220ms cubic-bezier(0.16, 1, 0.3, 1) both; }
   .motion-slide-down { animation: slide-down 180ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+  /* Faint engineered grid used behind the auth hero. */
+  .auth-grid {
+    background-image:
+      linear-gradient(to right, rgb(255 255 255 / 0.055) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.055) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(115% 90% at 30% 10%, #000 25%, transparent 75%);
+  }
+
+  /* Cursor-tracked glow. Consumers set --mx / --my in px. */
+  .spotlight::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 300ms ease;
+    background: radial-gradient(
+      260px circle at var(--mx, 50%) var(--my, 50%),
+      color-mix(in oklab, var(--primary) 22%, transparent),
+      transparent 70%
+    );
+  }
+  .spotlight:hover::before,
+  .spotlight:focus-within::before {
+    opacity: 1;
+  }
+
+  .field-glow {
+    transition: box-shadow 260ms ease, border-color 260ms ease, transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .field-glow:focus-within {
+    border-color: color-mix(in oklab, var(--primary) 55%, transparent);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--primary) 14%, transparent);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
