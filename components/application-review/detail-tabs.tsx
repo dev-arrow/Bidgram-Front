@@ -1,8 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import {
-  BriefcaseBusiness, Building2, CalendarClock, CheckCircle2, ClipboardList, Download, FileText,
-  Globe2, GraduationCap, Link2, ListChecks, Mail, MapPin, Phone, Share2, ShieldCheck,
+  BriefcaseBusiness, Building2, CalendarClock, Check, CheckCircle2, ClipboardList, Copy, Download,
+  FileText, Globe2, GraduationCap, Link2, ListChecks, Mail, MapPin, Phone, Share2, ShieldCheck,
   Sparkles, Star, Zap,
 } from 'lucide-react'
 import type { Application } from '@/lib/application-review-data'
@@ -36,6 +37,45 @@ function SkillChips({ items, tone = 'muted' }: { items: string[]; tone?: 'primar
         </span>
       ))}
     </div>
+  )
+}
+
+function CopyableLink({ value }: { value: string }) {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(value)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1000)
+    } catch {
+      // Clipboard access denied or unavailable — silently ignore.
+    }
+  }
+
+  return (
+    <span className="mt-1 flex items-center gap-1.5">
+      <a
+        href={value}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block truncate text-sm font-semibold text-primary underline-offset-2 hover:underline"
+      >
+        {value}
+      </a>
+      <button
+        type="button"
+        onClick={handleCopy}
+        aria-label={copied ? 'Link copied' : 'Copy link'}
+        className={`grid size-6 shrink-0 place-items-center rounded-md border transition-colors ${
+          copied
+            ? 'border-green-600 bg-green-600/10 text-green-600'
+            : 'border-input bg-card text-muted-foreground hover:bg-muted'
+        }`}
+      >
+        {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+      </button>
+    </span>
   )
 }
 
@@ -74,9 +114,7 @@ export function JobDescriptionTab({ current }: { current: Application }) {
               {meta.label}
             </p>
             {meta.href ? (
-              <a href={meta.href} target="_blank" rel="noopener noreferrer" className="mt-1 block truncate text-sm font-semibold text-primary underline-offset-2 hover:underline">
-                {meta.value}
-              </a>
+              <CopyableLink value={meta.value} />
             ) : (
               <p className="mt-1 text-sm font-semibold">{meta.value}</p>
             )}

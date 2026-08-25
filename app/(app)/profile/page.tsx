@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
-import { Bell, BadgeCheck, Search, Zap } from 'lucide-react'
+import { Bell, Search, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from '@/components/ui/input-group'
+import { ActiveCountBadge } from '@/components/profile/active-count-badge'
+import { ProfilesProvider } from '@/components/profile/profiles-context'
 import { ProfilesView } from '@/components/profile/profiles-view'
 
 export const metadata: Metadata = {
@@ -36,28 +38,27 @@ export default function ProfilePage() {
         </div>
       </header>
 
-      <div className="flex flex-col gap-6 px-6 py-6 lg:px-8">
-        <div className="flex animate-fade-up flex-col gap-3 rounded-2xl border border-primary/20 bg-accent/60 p-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-start gap-3.5">
-            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-card text-primary shadow-sm">
-              <Zap className="size-5" aria-hidden="true" />
-            </span>
-            <div className="flex flex-col gap-0.5">
-              <p className="text-sm font-semibold">Chrome extension</p>
-              <p className="text-xs leading-relaxed text-muted-foreground">
-                Profiles marked <span className="font-semibold text-primary">In use</span> are
-                available to auto-apply from the extension.
-              </p>
+      <ProfilesProvider>
+        <div className="flex min-h-0 flex-1 flex-col gap-6 px-6 py-6 lg:px-8">
+          <div className="flex shrink-0 animate-fade-up flex-col gap-3 rounded-2xl border border-primary/20 bg-accent/60 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-3.5">
+              <span className="grid size-10 shrink-0 place-items-center rounded-full bg-card text-primary shadow-sm">
+                <Zap className="size-5" aria-hidden="true" />
+              </span>
+              <div className="flex flex-col gap-0.5">
+                <p className="text-sm font-semibold">Chrome extension</p>
+                <p className="text-xs leading-relaxed text-muted-foreground">
+                  Profiles marked <span className="font-semibold text-primary">In use</span> are
+                  available to auto-apply from the extension.
+                </p>
+              </div>
             </div>
+            <ActiveCountBadge />
           </div>
-          <span className="flex w-fit shrink-0 items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground">
-            <BadgeCheck className="size-3.5" aria-hidden="true" />
-            2 active
-          </span>
-        </div>
 
-        <ProfilesView />
-      </div>
+          <ProfilesView />
+        </div>
+      </ProfilesProvider>
     </>
   )
 }

@@ -31,12 +31,14 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useProfilesContext } from '@/components/profile/profiles-context'
 import { WeekAxis, WeekBarChart } from '@/components/profile/week-bar-chart'
 import { WEEK_DAYS_LONG, weekTotal, type Profile } from '@/lib/profiles'
 import { cn } from '@/lib/utils'
 
 export function ProfileCard({ profile }: { profile: Profile }) {
-  const [inUse, setInUse] = useState(profile.inUse)
+  const { toggleInUse } = useProfilesContext()
+  const inUse = profile.inUse
   const [showTable, setShowTable] = useState(false)
   const total = weekTotal(profile)
 
@@ -178,7 +180,7 @@ export function ProfileCard({ profile }: { profile: Profile }) {
             aria-pressed={inUse}
             data-state={inUse ? 'using' : 'available'}
             title={inUse ? 'This profile is currently active' : 'Use this profile'}
-            onClick={() => setInUse((value) => !value)}
+            onClick={() => toggleInUse(profile.id)}
           >
             <BadgeCheck data-icon="inline-start" />
             <span>{inUse ? 'Using profile' : 'Use profile'}</span>

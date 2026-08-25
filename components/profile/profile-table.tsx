@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { BadgeCheck, Pencil, Star, Trash2, Zap } from 'lucide-react'
+import { BadgeCheck, Pencil, Trash2, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Table,
@@ -11,9 +11,95 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { useProfilesContext } from '@/components/profile/profiles-context'
 import { WeekAxis, WeekBarChart } from '@/components/profile/week-bar-chart'
 import { weekTotal, type Profile } from '@/lib/profiles'
 import { cn } from '@/lib/utils'
+
+function ProfileRow({ profile }: { profile: Profile }) {
+  const { toggleInUse } = useProfilesContext()
+  const inUse = profile.inUse
+
+  return (
+    <TableRow>
+      <TableCell className="px-4 py-3.5">
+        <div className="flex items-center gap-3">
+          <span
+            className={cn(
+              'grid size-4 shrink-0 place-items-center rounded-full',
+              inUse ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground/50',
+            )}
+            aria-hidden="true"
+          >
+            <BadgeCheck className="size-3" />
+          </span>
+          <div className="flex flex-col">
+            <span className="text-sm font-semibold">{profile.name}</span>
+            <span className="text-xs text-muted-foreground">{profile.title}</span>
+          </div>
+        </div>
+      </TableCell>
+      <TableCell className="px-4 py-3.5">
+        <div className="flex flex-col">
+          <span className="text-sm font-medium">{profile.experience[0].company}</span>
+          <span className="text-xs text-muted-foreground">
+            {profile.experience[0].period}
+            {profile.experience.length > 1 ? ` · +${profile.experience.length - 1}` : ''}
+          </span>
+        </div>
+      </TableCell>
+      <TableCell className="px-4 py-3.5">
+        <div className="flex flex-col">
+          <span className="text-sm font-medium">{profile.education.school}</span>
+          <span className="text-xs text-muted-foreground">
+            {profile.education.degree} · {profile.education.period}
+          </span>
+        </div>
+      </TableCell>
+      <TableCell className="px-4 py-3.5">
+        <div className="flex w-40 flex-col gap-1">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-xs font-bold text-primary">{weekTotal(profile)} applied</span>
+          </div>
+          <WeekBarChart data={profile.daily} height={32} />
+          <WeekAxis />
+        </div>
+      </TableCell>
+      <TableCell className="px-4 py-3.5">
+        <span className="flex items-center gap-1.5 text-sm font-semibold">
+          <Zap className="size-3.5 text-primary" aria-hidden="true" />
+          {profile.using}
+        </span>
+      </TableCell>
+      <TableCell className="px-4 py-3.5">
+        <div className="flex items-center justify-end gap-2">
+          <Button
+            variant={inUse ? 'default' : 'outline'}
+            size="sm"
+            aria-pressed={inUse}
+            title={inUse ? 'This profile is currently active' : 'Use this profile'}
+            onClick={() => toggleInUse(profile.id)}
+          >
+            <BadgeCheck data-icon="inline-start" />
+            {inUse ? 'In use' : 'Use'}
+          </Button>
+          <Button
+            variant="outline"
+            size="icon-sm"
+            aria-label={`Edit ${profile.name}`}
+            render={<Link href={`/profile/${profile.id}/edit`} />}
+            nativeButton={false}
+          >
+            <Pencil />
+          </Button>
+          <Button variant="outline" size="icon-sm" aria-label={`Delete ${profile.name}`}>
+            <Trash2 />
+          </Button>
+        </div>
+      </TableCell>
+    </TableRow>
+  )
+}
 
 export function ProfileTable({ profiles }: { profiles: Profile[] }) {
   return (
@@ -43,85 +129,7 @@ export function ProfileTable({ profiles }: { profiles: Profile[] }) {
         </TableHeader>
         <TableBody>
           {profiles.map((profile) => (
-            <TableRow key={profile.id}>
-              <TableCell className="px-4 py-3.5">
-                <div className="flex items-center gap-3">
-                  <Star
-                    className={cn(
-                      'size-4 shrink-0',
-                      profile.starred
-                        ? 'fill-brand-orange text-brand-orange'
-                        : 'text-muted-foreground/50',
-                    )}
-                    aria-hidden="true"
-                  />
-                  <div className="flex flex-col">
-                    <span className="text-sm font-semibold">{profile.name}</span>
-                    <span className="text-xs text-muted-foreground">{profile.title}</span>
-                  </div>
-                </div>
-              </TableCell>
-              <TableCell className="px-4 py-3.5">
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium">{profile.experience[0].company}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {profile.experience[0].period}
-                    {profile.experience.length > 1
-                      ? ` · +${profile.experience.length - 1}`
-                      : ''}
-                  </span>
-                </div>
-              </TableCell>
-              <TableCell className="px-4 py-3.5">
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium">{profile.education.school}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {profile.education.degree} · {profile.education.period}
-                  </span>
-                </div>
-              </TableCell>
-              <TableCell className="px-4 py-3.5">
-                <div className="flex w-40 flex-col gap-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-bold text-primary">
-                      {weekTotal(profile)} applied
-                    </span>
-                  </div>
-                  <WeekBarChart data={profile.daily} height={32} />
-                  <WeekAxis />
-                </div>
-              </TableCell>
-              <TableCell className="px-4 py-3.5">
-                <span className="flex items-center gap-1.5 text-sm font-semibold">
-                  <Zap className="size-3.5 text-primary" aria-hidden="true" />
-                  {profile.using}
-                </span>
-              </TableCell>
-              <TableCell className="px-4 py-3.5">
-                <div className="flex items-center justify-end gap-2">
-                  <Button variant={profile.inUse ? 'default' : 'outline'} size="sm">
-                    <BadgeCheck data-icon="inline-start" />
-                    {profile.inUse ? 'In use' : 'Use'}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="icon-sm"
-                    aria-label={`Edit ${profile.name}`}
-                    render={<Link href={`/profile/${profile.id}/edit`} />}
-                    nativeButton={false}
-                  >
-                    <Pencil />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="icon-sm"
-                    aria-label={`Delete ${profile.name}`}
-                  >
-                    <Trash2 />
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
+            <ProfileRow key={profile.id} profile={profile} />
           ))}
         </TableBody>
       </Table>

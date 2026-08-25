@@ -20,22 +20,20 @@ import {
 } from '@/components/ui/input-group'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { ProfileCard } from '@/components/profile/profile-card'
+import { useProfilesContext } from '@/components/profile/profiles-context'
 import { ProfileTable } from '@/components/profile/profile-table'
-import { profiles as allProfiles, totalApplications } from '@/lib/profiles'
-
-const stats = [
-  { icon: Briefcase, label: 'Total profiles', value: allProfiles.length },
-  { icon: Zap, label: 'Total applications', value: totalApplications() },
-  {
-    icon: BadgeCheck,
-    label: 'In use',
-    value: allProfiles.filter((profile) => profile.inUse).length,
-  },
-]
+import { totalApplications } from '@/lib/profiles'
 
 export function ProfilesView() {
+  const { profiles: allProfiles, activeCount } = useProfilesContext()
   const [query, setQuery] = useState('')
   const [view, setView] = useState<'grid' | 'table'>('grid')
+
+  const stats = [
+    { icon: Briefcase, label: 'Total profiles', value: allProfiles.length },
+    { icon: Zap, label: 'Total applications', value: totalApplications(allProfiles) },
+    { icon: BadgeCheck, label: 'In use', value: activeCount },
+  ]
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase()
@@ -43,11 +41,11 @@ export function ProfilesView() {
     return allProfiles.filter((profile) =>
       `${profile.name} ${profile.title}`.toLowerCase().includes(needle),
     )
-  }, [query])
+  }, [query, allProfiles])
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex animate-fade-up flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex min-h-0 flex-1 flex-col gap-6">
+      <div className="flex shrink-0 animate-fade-up flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <InputGroup className="h-10 sm:max-w-xs">
           <InputGroupAddon>
             <Search aria-hidden="true" />
@@ -86,7 +84,7 @@ export function ProfilesView() {
         </div>
       </div>
 
-      <div className="grid animate-fade-up gap-4 sm:grid-cols-3">
+      <div className="grid shrink-0 animate-fade-up gap-4 sm:grid-cols-3">
         {stats.map((stat, index) => (
           <div
             key={stat.label}
@@ -104,35 +102,37 @@ export function ProfilesView() {
         ))}
       </div>
 
-      {filtered.length === 0 ? (
-        <Empty className="rounded-2xl border border-dashed border-border bg-card">
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              <Search />
-            </EmptyMedia>
-            <EmptyTitle>No profiles found</EmptyTitle>
-            <EmptyDescription>
-              Nothing matches &ldquo;{query}&rdquo;. Try a different keyword.
-            </EmptyDescription>
-          </EmptyHeader>
-        </Empty>
-      ) : view === 'grid' ? (
-        <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
-          {filtered.map((profile, index) => (
-            <div
-              key={profile.id}
-              className="motion-pop-in"
-              style={{ animationDelay: `${index * 80}ms` }}
-            >
-              <ProfileCard profile={profile} />
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="animate-fade-up">
-          <ProfileTable profiles={filtered} />
-        </div>
-      )}
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        {filtered.length === 0 ? (
+          <Empty className="rounded-2xl border border-dashed border-border bg-card">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <Search />
+              </EmptyMedia>
+              <EmptyTitle>No profiles found</EmptyTitle>
+              <EmptyDescription>
+                Nothing matches &ldquo;{query}&rdquo;. Try a different keyword.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        ) : view === 'grid' ? (
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-5 p-1">
+            {filtered.map((profile, index) => (
+              <div
+                key={profile.id}
+                className="motion-pop-in"
+                style={{ animationDelay: `${index * 80}ms` }}
+              >
+                <ProfileCard profile={profile} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="animate-fade-up">
+            <ProfileTable profiles={filtered} />
+          </div>
+        )}
+      </div>
     </div>
   )
 }

@@ -9,7 +9,36 @@
 
 import { profiles } from './profiles'
 
-const REFERENCE_DATE = new Date('2026-08-24')
+export const REFERENCE_DATE = new Date('2026-08-24')
+
+/**
+ * Single source of truth for turning an application's `date` label ('Today',
+ * 'Yesterday', or an ISO-ish string) into a real Date. Both the sort/filter
+ * logic (application-review-view.tsx) and the `applied` display text below
+ * derive from this same function, so the visible "Applied X ago" text can
+ * never drift out of sync with the date actually used for sorting.
+ */
+export function getApplicationDate(dateLabel: string): Date {
+  if (dateLabel === 'Today') return REFERENCE_DATE
+  if (dateLabel === 'Yesterday') return new Date(REFERENCE_DATE.getTime() - 24 * 60 * 60 * 1000)
+  const parsed = new Date(dateLabel)
+  return Number.isNaN(parsed.getTime()) ? REFERENCE_DATE : parsed
+}
+
+/**
+ * Formats the "Applied ... ago" text from the same date used for sorting.
+ * `hoursAgoToday` lets same-day entries show hour-level granularity (e.g.
+ * "2 hours ago") instead of collapsing to "Today".
+ */
+function formatRelativeApplied(dateLabel: string, hoursAgoToday = 1): string {
+  const date = getApplicationDate(dateLabel)
+  const diffDays = Math.round((REFERENCE_DATE.getTime() - date.getTime()) / (24 * 60 * 60 * 1000))
+  if (diffDays <= 0) return `${hoursAgoToday} hour${hoursAgoToday === 1 ? '' : 's'} ago`
+  if (diffDays === 1) return '1 day ago'
+  if (diffDays < 7) return `${diffDays} days ago`
+  if (diffDays < 30) return `${Math.round(diffDays / 7)} week${Math.round(diffDays / 7) === 1 ? '' : 's'} ago`
+  return `${Math.round(diffDays / 30)} month${Math.round(diffDays / 30) === 1 ? '' : 's'} ago`
+}
 
 export type ReviewProfile = {
   id: string
@@ -96,14 +125,26 @@ export type Application = {
 /**
  * Review profiles are sourced directly from the Bidgram profiles used across
  * the app (see `lib/profiles.ts`), so the profile selector here always matches
- * the profiles configured on the Profile page. A profile is the account that
- * ran the bid — distinct from the applicant name captured on each application.
+ * every profile configured on the Profile page — not just the ones currently
+ * marked "In use" — so past applications stay reviewable even after a profile
+ * is paused. A profile is the account that ran the bid — distinct from the
+ * applicant name captured on each application.
+ *
+ * Each profile gets its own accent color so profiles stay visually
+ * distinguishable throughout the review list.
  */
 const profileColors: Record<string, string> = {
   'senior-react-dev': 'bg-violet-600',
-  'ui-ux-specialist': 'bg-primary',
+  'ui-ux-specialist': 'bg-blue-600',
   'budget-copywriter': 'bg-amber-600',
-  }
+  'backend-engineer': 'bg-emerald-600',
+  'growth-marketer': 'bg-rose-600',
+  'mobile-developer': 'bg-cyan-600',
+  'brand-strategist': 'bg-orange-600',
+  'data-analyst': 'bg-fuchsia-600',
+  'technical-writer': 'bg-teal-600',
+  'fullstack-builder': 'bg-indigo-600',
+}
 
 export const reviewProfiles: ReviewProfile[] = profiles.map((profile) => ({
   id: profile.id,
@@ -539,7 +580,7 @@ const seedApplications: Application[] = [
     status: 'Qualified',
     stage: 'Manually Completed',
     posted: '20 hours ago',
-    applied: '2 hours ago',
+    applied: formatRelativeApplied('Today', 2),
     date: 'Today',
     type: 'Dev',
     location: 'United States',
@@ -562,7 +603,7 @@ const seedApplications: Application[] = [
     status: 'Qualified',
     stage: 'Auto Applied',
     posted: '15 days ago',
-    applied: '12 days ago',
+    applied: formatRelativeApplied('Yesterday'),
     date: 'Yesterday',
     type: 'Cloud',
     location: 'Remote — US',
@@ -585,7 +626,7 @@ const seedApplications: Application[] = [
     status: 'Qualified',
     stage: 'Auto Applied',
     posted: '3 days ago',
-    applied: '1 day ago',
+    applied: formatRelativeApplied('Aug 21, 2026'),
     date: 'Aug 21, 2026',
     type: 'Design',
     location: 'San Francisco, CA',
@@ -608,7 +649,7 @@ const seedApplications: Application[] = [
     status: 'Disqualified',
     stage: 'Not Applied',
     posted: '1 month ago',
-    applied: '3 weeks ago',
+    applied: formatRelativeApplied('Jul 24, 2026'),
     date: 'Jul 24, 2026',
     type: 'Data',
     location: 'United States',
@@ -676,7 +717,7 @@ const generatedApplications: Application[] = profiles.flatMap((profile, profileI
       status: applicationIndex === 2 ? 'Disqualified' : 'Qualified',
       stage: applicationIndex === 2 ? 'Not Applied' : applicationIndex === 1 ? 'Manually Completed' : 'Auto Applied',
       posted: `${Math.max(1, dayOffset + 1)} days ago`,
-      applied: dayOffset === 0 ? '1 hour ago' : `${dayOffset} days ago`,
+      applied: formatRelativeApplied(dateLabel, 1),
       date: dateLabel,
       score: `${78 + ((profileIndex * 3 + applicationIndex * 4) % 18)}%`,
       screenshots: captureFlow('jobs.bidgram-demo.com', `/roles/${profile.id}-${applicationIndex + 1}`, dateLabel),
