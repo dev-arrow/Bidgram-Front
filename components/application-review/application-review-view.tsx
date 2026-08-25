@@ -67,7 +67,7 @@ export function ApplicationReviewView() {
   const [sortBy, setSortBy] = useState<'applied' | 'bidder' | 'az' | 'company'>('applied')
   const current = applications.find((item) => item.id === selected) ?? applications[0]
   const filtered = useMemo(() => applications.filter((item) => {
-    const itemDate = getApplicationDate(item.date)
+    const itemDate = getApplicationDate(item.date, item.appliedHoursAgo)
     const inRange = dateRangeActive && startDate && endDate
       ? itemDate >= new Date(startDate) && itemDate <= new Date(endDate)
       : weekFilters[selectedWeek](itemDate)
@@ -83,7 +83,7 @@ export function ApplicationReviewView() {
         return a.company.localeCompare(b.company)
       case 'applied':
       default:
-        return getApplicationDate(b.date).getTime() - getApplicationDate(a.date).getTime()
+        return getApplicationDate(b.date, b.appliedHoursAgo).getTime() - getApplicationDate(a.date, a.appliedHoursAgo).getTime()
     }
   }), [filtered, sortBy])
   const pageCount = Math.max(1, Math.ceil(sorted.length / 5))

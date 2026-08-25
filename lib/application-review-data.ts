@@ -17,9 +17,13 @@ export const REFERENCE_DATE = new Date('2026-08-24')
  * logic (application-review-view.tsx) and the `applied` display text below
  * derive from this same function, so the visible "Applied X ago" text can
  * never drift out of sync with the date actually used for sorting.
+ *
+ * `hoursAgo` disambiguates same-day ('Today') entries — without it every
+ * "Today" application would resolve to the exact same Date, making it
+ * impossible to sort "1 hour ago" before "2 hours ago".
  */
-export function getApplicationDate(dateLabel: string): Date {
-  if (dateLabel === 'Today') return REFERENCE_DATE
+export function getApplicationDate(dateLabel: string, hoursAgo = 0): Date {
+  if (dateLabel === 'Today') return new Date(REFERENCE_DATE.getTime() - hoursAgo * 60 * 60 * 1000)
   if (dateLabel === 'Yesterday') return new Date(REFERENCE_DATE.getTime() - 24 * 60 * 60 * 1000)
   const parsed = new Date(dateLabel)
   return Number.isNaN(parsed.getTime()) ? REFERENCE_DATE : parsed
@@ -31,7 +35,7 @@ export function getApplicationDate(dateLabel: string): Date {
  * "2 hours ago") instead of collapsing to "Today".
  */
 function formatRelativeApplied(dateLabel: string, hoursAgoToday = 1): string {
-  const date = getApplicationDate(dateLabel)
+  const date = getApplicationDate(dateLabel, hoursAgoToday)
   const diffDays = Math.round((REFERENCE_DATE.getTime() - date.getTime()) / (24 * 60 * 60 * 1000))
   if (diffDays <= 0) return `${hoursAgoToday} hour${hoursAgoToday === 1 ? '' : 's'} ago`
   if (diffDays === 1) return '1 day ago'
@@ -109,6 +113,8 @@ export type Application = {
   posted: string
   applied: string
   date: string
+  /** Hour-level offset used only when `date` is 'Today', to distinguish e.g. "1 hour ago" from "2 hours ago" for sorting. */
+  appliedHoursAgo?: number
   type: string
   location: string
   color: string
@@ -582,6 +588,7 @@ const seedApplications: Application[] = [
     posted: '20 hours ago',
     applied: formatRelativeApplied('Today', 2),
     date: 'Today',
+    appliedHoursAgo: 2,
     type: 'Dev',
     location: 'United States',
     color: 'bg-slate-900',
@@ -719,6 +726,7 @@ const generatedApplications: Application[] = profiles.flatMap((profile, profileI
       posted: `${Math.max(1, dayOffset + 1)} days ago`,
       applied: formatRelativeApplied(dateLabel, 1),
       date: dateLabel,
+      appliedHoursAgo: 1,
       score: `${78 + ((profileIndex * 3 + applicationIndex * 4) % 18)}%`,
       screenshots: captureFlow('jobs.bidgram-demo.com', `/roles/${profile.id}-${applicationIndex + 1}`, dateLabel),
     }
