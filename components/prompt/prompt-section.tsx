@@ -4,6 +4,7 @@ import { useRef, useState, type ComponentType } from 'react'
 import {
   Check,
   Copy,
+  EyeOff,
   FileText,
   Lock,
   MessagesSquare,
@@ -46,21 +47,21 @@ export function PromptSection({
   const Icon = PROMPT_ICONS[definition.id]
   const [mode, setMode] = useState<PromptMode>('default')
   const [savedCustom, setSavedCustom] = useState<string | null>(null)
-  const [draft, setDraft] = useState(definition.defaultPrompt)
+  const [draft, setDraft] = useState('')
   const [copied, setCopied] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const activeText = mode === 'custom' ? (savedCustom ?? definition.defaultPrompt) : definition.defaultPrompt
-  const isDirty = mode === 'custom' && draft !== (savedCustom ?? definition.defaultPrompt)
-  const matchesDefault = draft.trim() === definition.defaultPrompt.trim()
+  // The default prompt is never exposed to the client, so only the user's own
+  // saved text can be read back or copied.
+  const activeText = savedCustom ?? ''
+  const isDirty = mode === 'custom' && draft !== (savedCustom ?? '')
 
   function selectDefault() {
     setMode('default')
   }
 
   function selectCustom() {
-    // Seed the editor from whatever is currently in effect.
-    setDraft(savedCustom ?? definition.defaultPrompt)
+    setDraft(savedCustom ?? '')
     setMode('custom')
   }
 
@@ -78,11 +79,11 @@ export function PromptSection({
   }
 
   function discard() {
-    setDraft(savedCustom ?? definition.defaultPrompt)
+    setDraft(savedCustom ?? '')
   }
 
-  function restoreDefaultText() {
-    setDraft(definition.defaultPrompt)
+  function clearDraft() {
+    setDraft('')
     textareaRef.current?.focus()
   }
 
@@ -146,16 +147,19 @@ export function PromptSection({
           </div>
         </div>
 
-        <Button
-          variant="outline"
-          size="sm"
-          className="shrink-0 self-start"
-          onClick={copyActive}
-          aria-label={`Copy ${definition.title}`}
-        >
-          {copied ? <Check data-icon="inline-start" /> : <Copy data-icon="inline-start" />}
-          {copied ? 'Copied' : 'Copy'}
-        </Button>
+        {/* Copying is only offered for the user's own prompt - the default stays hidden. */}
+        {mode === 'custom' ? (
+          <Button
+            variant="outline"
+            size="sm"
+            className="shrink-0 self-start"
+            onClick={copyActive}
+            aria-label={`Copy ${definition.title}`}
+          >
+            {copied ? <Check data-icon="inline-start" /> : <Copy data-icon="inline-start" />}
+            {copied ? 'Copied' : 'Copy'}
+          </Button>
+        ) : null}
       </div>
 
       <div className="p-5 lg:p-6">
@@ -170,14 +174,14 @@ export function PromptSection({
             selected={mode === 'default'}
             icon={Sparkles}
             title="Use default"
-            description="Bidgram's tuned prompt. Maintained and improved for you."
+            description="Bidgram's tuned prompt. Private, maintained and improved for you."
             onSelect={selectDefault}
           />
           <OptionCard
             role="radio"
             selected={mode === 'custom'}
             icon={Pencil}
-            title="Edit and save"
+            title="Write your own"
             description={
               savedCustom
                 ? 'Your saved prompt. Edit it any time.'
@@ -189,14 +193,20 @@ export function PromptSection({
 
         <div className="mt-5">
           {mode === 'default' ? (
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-                <Lock className="size-3.5" aria-hidden="true" />
-                Read-only. Choose &ldquo;Edit and save&rdquo; to customise.
+            <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-border bg-muted/30 px-6 py-8 text-center">
+              <span className="grid size-11 place-items-center rounded-full bg-muted text-muted-foreground">
+                <EyeOff className="size-5" aria-hidden="true" />
+              </span>
+              <p className="text-sm font-bold">Bidgram&apos;s default prompt is private</p>
+              <p className="max-w-md text-xs leading-relaxed text-muted-foreground">
+                The tuned prompt behind {definition.output.toLowerCase()} generation is not shown.
+                It stays maintained and improved by us. Choose &ldquo;Write your own&rdquo; if you
+                want full control over the instructions.
+              </p>
+              <div className="mt-1 flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground">
+                <Lock className="size-3" aria-hidden="true" />
+                Hidden by default
               </div>
-              <pre className="max-h-72 overflow-auto rounded-xl border border-border bg-muted/40 p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-muted-foreground">
-                {definition.defaultPrompt}
-              </pre>
             </div>
           ) : (
             <div className="flex flex-col gap-3">
@@ -234,14 +244,9 @@ export function PromptSection({
                 </p>
 
                 <div className="flex flex-wrap items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={restoreDefaultText}
-                    disabled={matchesDefault}
-                  >
+                  <Button variant="ghost" size="sm" onClick={clearDraft} disabled={!draft}>
                     <RotateCcw data-icon="inline-start" />
-                    Reset to default
+                    Clear
                   </Button>
                   <Button variant="outline" size="sm" onClick={discard} disabled={!isDirty}>
                     Discard

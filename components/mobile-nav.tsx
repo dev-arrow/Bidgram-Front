@@ -9,9 +9,11 @@ import {
   MessageSquareHeart,
   Settings,
   User,
+  Wallet,
   Wand2,
 } from 'lucide-react'
 import { BrandLogo } from '@/components/brand-logo'
+import { CURRENT_USAGE } from '@/lib/billing-data'
 import { cn } from '@/lib/utils'
 
 const items = [
@@ -29,9 +31,20 @@ export function MobileNav() {
 
   return (
     <div className="sticky top-0 z-20 flex flex-col gap-2 bg-sidebar px-4 py-3 text-sidebar-foreground lg:hidden">
-      <Link href="/profile" className="w-fit">
-        <BrandLogo tone="dark" size={34} />
-      </Link>
+      <div className="flex items-center justify-between gap-3">
+        <Link href="/profile" className="w-fit">
+          <BrandLogo tone="dark" size={34} />
+        </Link>
+        <Link
+          href="/billing"
+          className="flex items-center gap-2 rounded-full border border-sidebar-border bg-sidebar-accent/50 px-3 py-1.5"
+        >
+          <Wallet className="size-3.5 text-sidebar-foreground/60" aria-hidden="true" />
+          <span className="text-sm font-bold tabular-nums">
+            ${CURRENT_USAGE.creditUsd.toFixed(2)}
+          </span>
+        </Link>
+      </div>
       <nav aria-label="Main" className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1">
         {items.map((item) => {
           const active = pathname === item.href

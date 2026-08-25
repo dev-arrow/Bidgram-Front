@@ -16,6 +16,7 @@ import {
   Zap,
 } from 'lucide-react'
 import { toast } from 'sonner'
+import { useLanguage } from '@/components/language-provider'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Field, FieldLabel } from '@/components/ui/field'
@@ -68,6 +69,9 @@ const SESSIONS: readonly SessionEntry[] = [
 ]
 
 export function SettingsView() {
+  // Interface language (applies app-wide via LanguageProvider)
+  const { locale, setLocale, t } = useLanguage()
+
   // Account
   const [fullName, setFullName] = useState('Jane Doe')
   const [email, setEmail] = useState('jane@example.com')

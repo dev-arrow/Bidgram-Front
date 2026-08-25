@@ -146,7 +146,7 @@ function PreviewOverlay({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+      className="fixed inset-0 z-50 flex"
       role="dialog"
       aria-modal="true"
       aria-label={`${template.name} preview`}
@@ -158,10 +158,10 @@ function PreviewOverlay({
         className="absolute inset-0 bg-foreground/50 backdrop-blur-sm motion-slide-down"
       />
 
-      <div className="motion-pop-in relative z-10 flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-2xl lg:flex-row">
-        {/* Large preview */}
-        <div className="flex max-h-[45vh] items-start justify-center overflow-y-auto bg-muted/40 p-6 lg:max-h-none lg:w-[56%] lg:p-10">
-          <div className="w-full max-w-[460px] overflow-hidden rounded-xl shadow-2xl ring-1 ring-black/10">
+      <div className="motion-pop-in relative z-10 flex h-full w-full flex-col overflow-hidden bg-card shadow-2xl lg:flex-row">
+        {/* Fullscreen preview */}
+        <div className="flex min-h-0 flex-1 items-start justify-center overflow-y-auto bg-muted/40 p-4 sm:p-6 lg:p-10">
+          <div className="w-full max-w-[720px] overflow-hidden rounded-xl shadow-2xl ring-1 ring-black/10">
             <div className="aspect-[794/1123] w-full">
               <TemplateThumbnail template={template} />
             </div>
@@ -169,7 +169,7 @@ function PreviewOverlay({
         </div>
 
         {/* Details */}
-        <div className="flex flex-col gap-5 overflow-y-auto p-6 lg:w-[44%] lg:p-8">
+        <div className="flex shrink-0 flex-col gap-5 overflow-y-auto border-t border-border p-6 lg:w-[400px] lg:border-t-0 lg:border-l lg:p-8">
           <div className="flex items-start justify-between gap-3">
             <div className="flex flex-col gap-1.5">
               <span className="text-xs font-semibold uppercase tracking-wide text-primary">

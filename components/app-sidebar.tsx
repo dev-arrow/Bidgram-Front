@@ -9,13 +9,16 @@ import {
   LayoutTemplate,
   LogOut,
   MessageSquareHeart,
+  Plus,
   Settings,
   Sparkles,
   User,
+  Wallet,
   Wand2,
 } from 'lucide-react'
 import { BrandLogo } from '@/components/brand-logo'
 import { Button } from '@/components/ui/button'
+import { CURRENT_USAGE } from '@/lib/billing-data'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -30,6 +33,7 @@ const navItems = [
 
 export function AppSidebar() {
   const pathname = usePathname()
+  const balanceLabel = `$${CURRENT_USAGE.creditUsd.toFixed(2)}`
 
   return (
     <aside className="sticky top-0 hidden h-svh w-72 shrink-0 flex-col gap-6 bg-sidebar px-4 py-5 text-sidebar-foreground lg:flex">
@@ -66,6 +70,25 @@ export function AppSidebar() {
       </nav>
 
       <div className="mt-auto flex flex-col gap-4">
+        {/* Current wallet balance, always visible in the menu. */}
+        <Link
+          href="/billing"
+          className="flex items-center gap-3 rounded-2xl border border-sidebar-border bg-sidebar-accent/40 px-3.5 py-3 transition-colors hover:border-sidebar-primary/50 hover:bg-sidebar-accent"
+        >
+          <span className="grid size-9 shrink-0 place-items-center rounded-full bg-sidebar-primary/15 text-sidebar-primary-foreground">
+            <Wallet className="size-4.5" aria-hidden="true" />
+          </span>
+          <span className="flex flex-1 flex-col">
+            <span className="text-[11px] font-semibold uppercase tracking-wide text-sidebar-foreground/55">
+              Balance
+            </span>
+            <span className="text-lg font-extrabold leading-tight tabular-nums">
+              {balanceLabel}
+            </span>
+          </span>
+          <Plus className="size-4 text-sidebar-foreground/50" aria-hidden="true" />
+        </Link>
+
         <div className="relative overflow-hidden rounded-2xl bg-sidebar-primary p-4 text-sidebar-primary-foreground">
           <span
             aria-hidden="true"

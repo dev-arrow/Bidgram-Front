@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google'
+import { LanguageProvider } from '@/components/language-provider'
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import './globals.css'
@@ -35,7 +36,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`bg-background ${jakarta.variable} ${mono.variable}`}>
       <body className="font-sans antialiased">
-        <TooltipProvider delay={120}>{children}</TooltipProvider>
+        <LanguageProvider>
+          <TooltipProvider delay={120}>{children}</TooltipProvider>
+        </LanguageProvider>
         <Toaster position="top-center" />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
