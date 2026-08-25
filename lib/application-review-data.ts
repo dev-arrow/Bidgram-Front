@@ -9,6 +9,8 @@
 
 import { profiles } from './profiles'
 
+const REFERENCE_DATE = new Date('2026-08-24')
+
 export type ReviewProfile = {
   id: string
   name: string
@@ -527,7 +529,7 @@ function captureFlow(host: string, path: string, day: string): Screenshot[] {
 /* Applications                       */
 /* ---------------------------------- */
 
-export const applications: Application[] = [
+const seedApplications: Application[] = [
   {
     id: 1,
     profileId: 'senior-react-dev',
@@ -621,6 +623,68 @@ export const applications: Application[] = [
     screenshots: captureFlow('careers.snowflake.com', '/data-engineer', 'Jul 24, 2026'),
   },
 ]
+
+const applicationTitles = [
+  'Senior Frontend Engineer',
+  'Product Designer',
+  'Content Marketing Specialist',
+  'Backend Platform Engineer',
+  'Growth Marketing Lead',
+  'iOS Software Engineer',
+  'Brand Design Consultant',
+  'Business Intelligence Analyst',
+  'Technical Documentation Writer',
+  'Full-Stack Product Engineer',
+]
+
+const applicationCompanies = [
+  'Linear',
+  'Notion',
+  'Webflow',
+  'Ramp',
+  'Lattice',
+  'Vercel',
+  'Dropbox',
+  'Datadog',
+  'Atlassian',
+  'Loom',
+]
+
+const profileApplicationCounts = new Map<string, number>()
+for (const application of seedApplications) {
+  profileApplicationCounts.set(application.profileId, (profileApplicationCounts.get(application.profileId) ?? 0) + 1)
+}
+
+const generatedApplications: Application[] = profiles.flatMap((profile, profileIndex) => {
+  const existingCount = profileApplicationCounts.get(profile.id) ?? 0
+  const needed = Math.max(0, 3 - existingCount)
+  const template = seedApplications[profileIndex % seedApplications.length]
+
+  return Array.from({ length: needed }, (_, applicationIndex) => {
+    const id = 100 + profileIndex * 10 + applicationIndex
+    const dayOffset = (profileIndex + applicationIndex) % 7
+    const date = new Date(REFERENCE_DATE.getTime() - dayOffset * 24 * 60 * 60 * 1000)
+    const dateLabel = dayOffset === 0 ? 'Today' : dayOffset === 1 ? 'Yesterday' : date.toISOString().slice(0, 10)
+
+    return {
+      ...template,
+      id,
+      profileId: profile.id,
+      bidderName: profile.name,
+      company: applicationCompanies[(profileIndex + applicationIndex) % applicationCompanies.length],
+      title: applicationTitles[profileIndex],
+      status: applicationIndex === 2 ? 'Disqualified' : 'Qualified',
+      stage: applicationIndex === 2 ? 'Not Applied' : applicationIndex === 1 ? 'Manually Completed' : 'Auto Applied',
+      posted: `${Math.max(1, dayOffset + 1)} days ago`,
+      applied: dayOffset === 0 ? '1 hour ago' : `${dayOffset} days ago`,
+      date: dateLabel,
+      score: `${78 + ((profileIndex * 3 + applicationIndex * 4) % 18)}%`,
+      screenshots: captureFlow('jobs.bidgram-demo.com', `/roles/${profile.id}-${applicationIndex + 1}`, dateLabel),
+    }
+  })
+})
+
+export const applications: Application[] = [...seedApplications, ...generatedApplications]
 
 export const reviewTabs = [
   { value: 'jd', label: 'JD' },
