@@ -21,6 +21,8 @@ export type JobDescription = {
   location: string
   employmentType: string
   visaSponsorship: string
+  jobLink: string
+  expirationDate: string
   requiredSkills: string[]
   bonusSkills: string[]
   aboutCompany: string
@@ -96,10 +98,10 @@ export type Application = {
  * ran the bid — distinct from the applicant name captured on each application.
  */
 const profileColors: Record<string, string> = {
-  'senior-react-dev': 'bg-slate-900',
+  'senior-react-dev': 'bg-violet-600',
   'ui-ux-specialist': 'bg-primary',
-  'budget-copywriter': 'bg-slate-600',
-}
+  'budget-copywriter': 'bg-amber-600',
+  }
 
 export const reviewProfiles: ReviewProfile[] = profiles.map((profile) => ({
   id: profile.id,
@@ -174,6 +176,8 @@ const epamDevOpsJD: JobDescription = {
   location: 'United States',
   employmentType: 'Full Time',
   visaSponsorship: 'Likely Sponsor Visa',
+  jobLink: 'https://careers.epam.com/jobs/senior-devops-engineer',
+  expirationDate: 'Sep 20, 2026',
   requiredSkills: [
     'AWS', 'Terraform', 'Kubernetes', 'CI/CD pipelines', 'Bash', 'Observability',
     'Troubleshooting', 'Distributed Systems', 'Messaging Systems', 'Databases', 'Storage',
@@ -235,6 +239,8 @@ const lmiCloudJD: JobDescription = {
   location: 'Remote — United States',
   employmentType: 'Contract (W2)',
   visaSponsorship: 'No Sponsorship',
+  jobLink: 'https://careers.lmi.org/jobs/cloud-engineer',
+  expirationDate: 'Sep 5, 2026',
   requiredSkills: [
     'Google Cloud Platform', 'AWS', 'Microsoft Azure', 'GKE', 'Cloud Run', 'BigQuery',
     'IAM', 'GitLab CI/CD', 'Linux', 'Cloud Architecture',
@@ -287,6 +293,8 @@ const figmaDesignJD: JobDescription = {
   location: 'San Francisco, CA (Hybrid)',
   employmentType: 'Full Time',
   visaSponsorship: 'Case by Case',
+  jobLink: 'https://figma.com/careers/senior-product-designer',
+  expirationDate: 'Sep 12, 2026',
   requiredSkills: [
     'Product Design', 'Figma', 'Design Systems', 'Prototyping', 'User Research',
     'Interaction Design', 'Wireframing', 'Accessibility',
@@ -522,13 +530,14 @@ function captureFlow(host: string, path: string, day: string): Screenshot[] {
 export const applications: Application[] = [
   {
     id: 1,
-    profileId: 'gary',
+    profileId: 'senior-react-dev',
     bidderName: 'Gary Gribble',
     company: 'EPAM Systems',
     title: 'Senior DevOps Engineer',
     status: 'Qualified',
     stage: 'Manually Completed',
     posted: '20 hours ago',
+    applied: '2 hours ago',
     date: 'Today',
     type: 'Dev',
     location: 'United States',
@@ -544,13 +553,14 @@ export const applications: Application[] = [
   },
   {
     id: 2,
-    profileId: 'gary',
+    profileId: 'senior-react-dev',
     bidderName: 'Gary Gribble',
     company: 'LMI Government Consulting',
     title: 'Cloud Engineer',
     status: 'Qualified',
     stage: 'Auto Applied',
     posted: '15 days ago',
+    applied: '12 days ago',
     date: 'Yesterday',
     type: 'Cloud',
     location: 'Remote — US',
@@ -566,13 +576,14 @@ export const applications: Application[] = [
   },
   {
     id: 3,
-    profileId: 'sarah',
+    profileId: 'ui-ux-specialist',
     bidderName: 'Sarah Chen',
     company: 'Figma',
     title: 'Senior Product Designer',
     status: 'Qualified',
     stage: 'Auto Applied',
     posted: '3 days ago',
+    applied: '1 day ago',
     date: 'Aug 21, 2026',
     type: 'Design',
     location: 'San Francisco, CA',
@@ -588,13 +599,14 @@ export const applications: Application[] = [
   },
   {
     id: 4,
-    profileId: 'michael',
+    profileId: 'budget-copywriter',
     bidderName: 'Michael Ross',
     company: 'Snowflake',
     title: 'Data Engineer',
     status: 'Disqualified',
     stage: 'Not Applied',
     posted: '1 month ago',
+    applied: '3 weeks ago',
     date: 'Jul 24, 2026',
     type: 'Data',
     location: 'United States',

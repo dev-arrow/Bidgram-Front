@@ -1,8 +1,8 @@
 'use client'
 
 import {
-  BriefcaseBusiness, Building2, CheckCircle2, ClipboardList, Download, FileText,
-  Globe2, GraduationCap, ListChecks, Mail, MapPin, Phone, Share2, ShieldCheck,
+  BriefcaseBusiness, Building2, CalendarClock, CheckCircle2, ClipboardList, Download, FileText,
+  Globe2, GraduationCap, Link2, ListChecks, Mail, MapPin, Phone, Share2, ShieldCheck,
   Sparkles, Star, Zap,
 } from 'lucide-react'
 import type { Application } from '@/lib/application-review-data'
@@ -59,19 +59,27 @@ function BulletList({ items }: { items: string[] }) {
 export function JobDescriptionTab({ current }: { current: Application }) {
   const { jd } = current
   return (
-    <article className="mx-auto max-w-3xl space-y-8 p-6 lg:p-8">
+    <article className="min-h-0 flex-1 overflow-y-auto mx-auto w-full max-w-3xl space-y-8 p-6 lg:p-8 xl:max-h-[calc(100svh-21rem)]">
       <div className="grid grid-cols-1 gap-4 rounded-xl border border-border bg-card p-5 sm:grid-cols-3">
         {[
           { icon: MapPin, label: 'Location', value: jd.location },
           { icon: BriefcaseBusiness, label: 'Employment Type', value: jd.employmentType },
           { icon: ShieldCheck, label: 'Visa Sponsorship', value: jd.visaSponsorship },
+          { icon: CalendarClock, label: 'Job Expiration', value: jd.expirationDate },
+          { icon: Link2, label: 'Job Link', value: jd.jobLink, href: jd.jobLink },
         ].map((meta) => (
           <div key={meta.label}>
             <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
               <meta.icon className="size-3.5" aria-hidden="true" />
               {meta.label}
             </p>
-            <p className="mt-1 text-sm font-semibold">{meta.value}</p>
+            {meta.href ? (
+              <a href={meta.href} target="_blank" rel="noopener noreferrer" className="mt-1 block truncate text-sm font-semibold text-primary underline-offset-2 hover:underline">
+                {meta.value}
+              </a>
+            ) : (
+              <p className="mt-1 text-sm font-semibold">{meta.value}</p>
+            )}
           </div>
         ))}
       </div>
@@ -126,7 +134,7 @@ export function JobDescriptionTab({ current }: { current: Application }) {
 export function ResumeTab({ current }: { current: Application }) {
   const { resume } = current
   return (
-    <div className="mx-auto max-w-3xl p-6 lg:p-8">
+    <div className="min-h-0 flex-1 overflow-y-auto mx-auto w-full max-w-3xl p-6 lg:p-8 xl:max-h-[calc(100svh-21rem)]">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <p className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
           <FileText className="size-4 text-primary" aria-hidden="true" />
@@ -232,7 +240,7 @@ function ResumeSection({ title, children }: { title: string; children: React.Rea
 
 export function CoverLetterTab({ current }: { current: Application }) {
   return (
-    <div className="mx-auto max-w-3xl p-6 lg:p-8">
+    <div className="min-h-0 flex-1 overflow-y-auto mx-auto w-full max-w-3xl p-6 lg:p-8 xl:max-h-[calc(100svh-21rem)]">
       <div className="rounded-xl border border-border bg-card p-6 lg:p-8">
         <div className="mb-6 flex items-center gap-3 border-b border-border pb-5">
           <div className="grid size-10 place-items-center rounded-lg bg-accent text-primary">
@@ -262,7 +270,7 @@ export function CoverLetterTab({ current }: { current: Application }) {
 export function QATab({ current }: { current: Application }) {
   const { qa } = current
   return (
-    <div className="mx-auto max-w-3xl space-y-4 p-6 lg:p-8">
+    <div className="min-h-0 flex-1 overflow-y-auto mx-auto w-full max-w-3xl space-y-4 p-6 lg:p-8 xl:max-h-[calc(100svh-21rem)]">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <ClipboardList className="size-4 text-primary" aria-hidden="true" />
