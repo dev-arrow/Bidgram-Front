@@ -23,7 +23,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { CURRENT_USAGE } from '@/lib/billing-data'
+import { REMAINING } from '@/lib/billing-data'
 import { cn } from '@/lib/utils'
 
 const items = [
@@ -51,9 +51,8 @@ export function MobileNav() {
             className="flex items-center gap-2 rounded-full border border-sidebar-border bg-sidebar-accent/50 px-3 py-1.5"
           >
             <Wallet className="size-3.5 text-sidebar-foreground/60" aria-hidden="true" />
-            <span className="text-sm font-bold tabular-nums">
-              ${CURRENT_USAGE.creditUsd.toFixed(2)}
-            </span>
+            <span className="text-sm font-bold tabular-nums">{REMAINING.toLocaleString()}</span>
+            <span className="text-[11px] text-sidebar-foreground/55">left</span>
           </Link>
 
           <DropdownMenu>

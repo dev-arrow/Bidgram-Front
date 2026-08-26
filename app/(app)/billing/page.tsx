@@ -13,7 +13,7 @@ export default function BillingPage() {
     <>
       <PageHeader
         title="Billing"
-        description="Pick a plan and pay in crypto. No cards, no bank details, no chargebacks."
+        description="Pay for applications. Everything else — AI, tailoring, cover letters, auto-fill — is included."
       />
 
       <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-6 py-6 lg:px-8">
@@ -23,11 +23,11 @@ export default function BillingPage() {
               <Bitcoin className="size-5" aria-hidden="true" />
             </span>
             <div className="flex flex-col gap-0.5">
-              <p className="text-sm font-semibold">Crypto-only billing</p>
+              <p className="text-sm font-semibold">Crypto-only, wallet-to-wallet</p>
               <p className="text-xs leading-relaxed text-muted-foreground">
-                Bidgram does not accept credit or debit cards. We settle in{' '}
-                <span className="font-semibold text-primary">USDT, USDC, BTC, and ETH</span> across
-                the networks below.
+                No cards, no processor. Your payment goes directly to our{' '}
+                <span className="font-semibold text-primary">USDT, USDC, BTC, or ETH</span> wallet,
+                and applications land in your balance after 2 confirmations.
               </p>
             </div>
           </div>

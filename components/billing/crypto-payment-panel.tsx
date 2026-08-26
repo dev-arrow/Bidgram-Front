@@ -9,10 +9,10 @@ import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import {
   CRYPTO_ASSETS,
+  formatAllowance,
   quoteAmount,
   type CryptoAsset,
   type Plan,
-  type BillingCycle,
 } from '@/lib/billing-data'
 import { cn } from '@/lib/utils'
 
@@ -39,15 +39,7 @@ function formatCountdown(totalSeconds: number): string {
   return `${minutes}:${seconds.toString().padStart(2, '0')}`
 }
 
-export function CryptoPaymentPanel({
-  plan,
-  cycle,
-  totalUsd,
-}: {
-  plan: Plan
-  cycle: BillingCycle
-  totalUsd: number
-}) {
+export function CryptoPaymentPanel({ plan, totalUsd }: { plan: Plan; totalUsd: number }) {
   const [asset, setAsset] = useState<CryptoAsset>(CRYPTO_ASSETS[0])
   const [network, setNetwork] = useState<string>(CRYPTO_ASSETS[0].networks[0])
   const [status, setStatus] = useState<PaymentStatus>('idle')
@@ -98,8 +90,11 @@ export function CryptoPaymentPanel({
     // Front-end only: stands in for watching the chain for confirmations.
     confirmTimer.current = window.setTimeout(() => {
       setStatus('confirmed')
-      toast.success('Payment detected', {
-        description: `${plan.name} is active. A receipt is in your invoice history.`,
+      toast.success('Payment detected on-chain', {
+        description:
+          plan.kind === 'pack'
+            ? `${formatAllowance(plan.applications)} applications added to your balance.`
+            : 'Unlimited applications active for the next 12 months.',
       })
     }, 2600)
   }
@@ -116,8 +111,20 @@ export function CryptoPaymentPanel({
         <div className="flex flex-col gap-1">
           <h2 className="text-lg font-bold tracking-tight">Payment received</h2>
           <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
-            Your <span className="font-semibold text-foreground">{plan.name}</span> plan is active
-            and billed {cycle}. The transaction is recorded below.
+            {plan.kind === 'pack' ? (
+              <>
+                <span className="font-semibold text-foreground">
+                  {formatAllowance(plan.applications)} applications
+                </span>{' '}
+                were added to your balance. They never expire.
+              </>
+            ) : (
+              <>
+                <span className="font-semibold text-foreground">Unlimited</span> is active for the
+                next 12 months.
+              </>
+            )}{' '}
+            The transaction is recorded below.
           </p>
         </div>
         <Button variant="outline" size="sm" onClick={() => setStatus('idle')}>
@@ -136,14 +143,15 @@ export function CryptoPaymentPanel({
         <div className="flex flex-col gap-0.5">
           <h2 className="text-base font-bold tracking-tight">Pay with crypto</h2>
           <p className="text-xs text-muted-foreground">
-            {plan.name} &middot; billed {cycle}
+            {plan.name} &middot;{' '}
+            {plan.kind === 'pack'
+              ? `${formatAllowance(plan.applications)} applications`
+              : 'Unlimited for 12 months'}
           </p>
         </div>
         <div className="text-right">
           <p className="font-mono text-xl font-bold tabular-nums">${totalUsd}</p>
-          <p className="text-[11px] text-muted-foreground">
-            {cycle === 'monthly' ? 'per month' : 'per month, billed yearly'}
-          </p>
+          <p className="text-[11px] text-muted-foreground">{plan.priceNote}</p>
         </div>
       </div>
 
@@ -316,8 +324,8 @@ export function CryptoPaymentPanel({
           <ShieldCheck className="mt-px size-3.5 shrink-0 text-primary" aria-hidden="true" />
           Send only <span className="font-semibold text-foreground">{asset.symbol}</span> on the{' '}
           <span className="font-semibold text-foreground">{network}</span> network to this address.
-          Funds sent on another network cannot be recovered. Your plan activates after 2 network
-          confirmations.
+          Payments go straight to our wallet — no processor in between. Funds sent on another network
+          cannot be recovered. Applications are credited after 2 network confirmations.
         </p>
       </div>
     </section>

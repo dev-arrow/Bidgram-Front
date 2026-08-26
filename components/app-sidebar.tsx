@@ -19,7 +19,7 @@ import {
 import { BrandLogo } from '@/components/brand-logo'
 import { useLanguage } from '@/components/language-provider'
 import { Button } from '@/components/ui/button'
-import { CURRENT_USAGE } from '@/lib/billing-data'
+import { REMAINING } from '@/lib/billing-data'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -35,7 +35,7 @@ const navItems = [
 export function AppSidebar() {
   const pathname = usePathname()
   const { t } = useLanguage()
-  const balanceLabel = `$${CURRENT_USAGE.creditUsd.toFixed(2)}`
+  const balanceLabel = REMAINING.toLocaleString()
 
   return (
     <aside className="sticky top-0 hidden h-svh w-72 shrink-0 flex-col gap-6 bg-sidebar px-4 py-5 text-sidebar-foreground lg:flex">
@@ -82,7 +82,7 @@ export function AppSidebar() {
           </span>
           <span className="flex flex-1 flex-col">
             <span className="text-[11px] font-semibold uppercase tracking-wide text-sidebar-foreground/55">
-              {t.balance}
+              Applications left
             </span>
             <span className="text-lg font-extrabold leading-tight tabular-nums">
               {balanceLabel}
@@ -98,17 +98,18 @@ export function AppSidebar() {
           />
           <p className="relative flex items-center gap-1.5 text-sm font-bold">
             <Sparkles className="size-4" aria-hidden="true" />
-            Go Pro
+            Go Unlimited
           </p>
           <p className="relative mt-1 text-xs leading-relaxed text-primary-foreground/80">
-            Unlimited AI proposals, lowest bid cost.
+            Unlimited applications for a year. $100, paid once.
           </p>
           <Button
             variant="secondary"
             size="sm"
             className="relative mt-3 w-full bg-card text-primary hover:bg-card/90"
+            render={<Link href="/billing" />}
           >
-            Upgrade plan
+            See plans
           </Button>
         </div>
 
