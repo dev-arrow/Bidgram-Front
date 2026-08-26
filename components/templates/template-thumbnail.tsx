@@ -54,13 +54,6 @@ export function TemplateThumbnail({ template }: { template: Template }) {
 const SUMMARY =
   'Senior product designer with 8+ years crafting intuitive, accessible digital products across fintech and SaaS. I lead cross-functional teams from discovery research through launch, translating ambiguous problems into clean, measurable experiences that move revenue and retention.'
 
-const METRICS = [
-  { value: '2M+', label: 'Users reached' },
-  { value: '+27%', label: 'Activation lift' },
-  { value: '40%', label: 'Faster handoff' },
-  { value: '14', label: 'Products shipped' },
-]
-
 const SKILLS = [
   'Product Strategy',
   'UX Research',
@@ -285,27 +278,6 @@ function ResumeBody({ template }: { template: Template }) {
     <div style={{ flex: 1, padding: '18px 52px 30px', display: 'flex', flexDirection: 'column', gap: 15 }}>
       <Section title="Profile" template={template}>
         <p style={{ margin: 0, fontSize: 11.5, lineHeight: 1.5 }}>{SUMMARY}</p>
-        <div style={{ marginTop: 10, display: 'flex', gap: 8 }}>
-          {METRICS.map((m) => (
-            <div
-              key={m.label}
-              style={{
-                flex: 1,
-                padding: '6px 8px',
-                borderRadius: 6,
-                borderTop: `2px solid ${style.accent}`,
-                backgroundColor: rgba(style.accent, 0.08),
-              }}
-            >
-              <div style={{ fontSize: 15, fontWeight: 700, color: style.headline, lineHeight: 1.1 }}>
-                {m.value}
-              </div>
-              <div style={{ fontSize: 9.5, letterSpacing: '0.06em', textTransform: 'uppercase', opacity: 0.7 }}>
-                {m.label}
-              </div>
-            </div>
-          ))}
-        </div>
       </Section>
 
       <Section title="Core Competencies" template={template}>

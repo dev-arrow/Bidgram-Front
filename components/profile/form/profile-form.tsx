@@ -90,7 +90,7 @@ export function ProfileForm({ profile }: { profile?: Profile }) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex min-h-0 flex-1 flex-col">
+    <form onSubmit={onSubmit} className="flex min-h-0 flex-1 flex-col overflow-hidden">
       <header className="z-10 flex shrink-0 flex-col gap-3 border-b border-border bg-background/85 px-6 py-5 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between lg:px-8">
         <div className="flex items-center gap-3">
           <Button
@@ -125,26 +125,28 @@ export function ProfileForm({ profile }: { profile?: Profile }) {
         </div>
       </header>
 
-      <div className="mx-auto flex max-w-4xl flex-col gap-5 px-6 py-6 lg:px-8">
-        <ResumeUploadSection />
-        <ProfileDetailsSection defaults={defaults} />
-        <AddressLinksSection defaults={defaults} />
-        <WorkExperienceSection />
-        <EducationSection />
-        <CertificationsSection />
-        <LanguagesSection />
-        <ReferencesSection />
-        <ApplicationDefaultsSection />
-        <PreferencesSection />
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className="mx-auto flex max-w-4xl flex-col gap-5 px-6 py-6 lg:px-8">
+          <ResumeUploadSection />
+          <ProfileDetailsSection defaults={defaults} />
+          <AddressLinksSection defaults={defaults} />
+          <WorkExperienceSection />
+          <EducationSection />
+          <CertificationsSection />
+          <LanguagesSection />
+          <ReferencesSection />
+          <ApplicationDefaultsSection />
+          <PreferencesSection />
 
-        <div className="flex items-center justify-end gap-2 pb-4">
-          <Button type="button" variant="outline" render={<Link href="/profile" />} nativeButton={false}>
-            Cancel
-          </Button>
-          <Button type="submit" disabled={pending}>
-            {pending ? <Spinner data-icon="inline-start" /> : <Check data-icon="inline-start" />}
-            {isEditing ? 'Save changes' : 'Create profile'}
-          </Button>
+          <div className="flex items-center justify-end gap-2 pb-4">
+            <Button type="button" variant="outline" render={<Link href="/profile" />} nativeButton={false}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={pending}>
+              {pending ? <Spinner data-icon="inline-start" /> : <Check data-icon="inline-start" />}
+              {isEditing ? 'Save changes' : 'Create profile'}
+            </Button>
+          </div>
         </div>
       </div>
     </form>

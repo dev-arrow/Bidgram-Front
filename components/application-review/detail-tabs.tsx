@@ -99,7 +99,7 @@ function BulletList({ items }: { items: string[] }) {
 export function JobDescriptionTab({ current }: { current: Application }) {
   const { jd } = current
   return (
-    <article className="min-h-0 flex-1 overflow-y-auto mx-auto w-full max-w-3xl space-y-8 p-6 lg:p-8">
+    <article className="xl:min-h-0 xl:flex-1 xl:overflow-y-auto mx-auto w-full max-w-3xl space-y-8 p-6 lg:p-8">
       <div className="grid grid-cols-1 gap-4 rounded-xl border border-border bg-card p-5 sm:grid-cols-3">
         {[
           { icon: MapPin, label: 'Location', value: jd.location },
@@ -172,7 +172,7 @@ export function JobDescriptionTab({ current }: { current: Application }) {
 export function ResumeTab({ current }: { current: Application }) {
   const { resume } = current
   return (
-    <div className="min-h-0 flex-1 overflow-y-auto mx-auto w-full max-w-3xl p-6 lg:p-8">
+    <div className="xl:min-h-0 xl:flex-1 xl:overflow-y-auto mx-auto w-full max-w-3xl p-6 lg:p-8">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <p className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
           <FileText className="size-4 text-primary" aria-hidden="true" />
@@ -278,7 +278,7 @@ function ResumeSection({ title, children }: { title: string; children: React.Rea
 
 export function CoverLetterTab({ current }: { current: Application }) {
   return (
-    <div className="min-h-0 flex-1 overflow-y-auto mx-auto w-full max-w-3xl p-6 lg:p-8">
+    <div className="xl:min-h-0 xl:flex-1 xl:overflow-y-auto mx-auto w-full max-w-3xl p-6 lg:p-8">
       <div className="rounded-xl border border-border bg-card p-6 lg:p-8">
         <div className="mb-6 flex items-center gap-3 border-b border-border pb-5">
           <div className="grid size-10 place-items-center rounded-lg bg-accent text-primary">
@@ -308,7 +308,7 @@ export function CoverLetterTab({ current }: { current: Application }) {
 export function QATab({ current }: { current: Application }) {
   const { qa } = current
   return (
-    <div className="min-h-0 flex-1 overflow-y-auto mx-auto w-full max-w-3xl space-y-4 p-6 lg:p-8">
+    <div className="xl:min-h-0 xl:flex-1 xl:overflow-y-auto mx-auto w-full max-w-3xl space-y-4 p-6 lg:p-8">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <ClipboardList className="size-4 text-primary" aria-hidden="true" />
@@ -349,7 +349,7 @@ export function QATab({ current }: { current: Application }) {
 
 export function ScreenshotsTab({ current }: { current: Application }) {
   return (
-    <div className="min-h-0 flex-1 overflow-y-auto mx-auto w-full max-w-4xl space-y-4 p-6 lg:p-8">
+    <div className="xl:min-h-0 xl:flex-1 xl:overflow-y-auto mx-auto w-full max-w-4xl space-y-4 p-6 lg:p-8">
       <div className="flex items-center gap-2">
         <Share2 className="size-4 text-primary" aria-hidden="true" />
         <div>

@@ -71,19 +71,6 @@ export function LoginForm() {
           </p>
         </header>
 
-        <div className="flex animate-fade-up gap-3" style={{ animationDelay: '190ms' }}>
-          <SocialButton label="Google" icon={<GoogleMark />} />
-          <SocialButton label="GitHub" icon={<GitHubMark />} />
-        </div>
-
-        <div className="flex animate-fade-up items-center gap-3" style={{ animationDelay: '230ms' }}>
-          <span className="h-px flex-1 bg-border" />
-          <span className="text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
-            or use your email
-          </span>
-          <span className="h-px flex-1 bg-border" />
-        </div>
-
         <form onSubmit={onSubmit} className="flex flex-col gap-5">
           <FloatField
             id="email"
@@ -266,42 +253,4 @@ function FloatField({
   )
 }
 
-function SocialButton({ label, icon }: { label: string; icon: React.ReactNode }) {
-  return (
-    <button
-      type="button"
-      className="interactive-surface flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-background text-sm font-semibold hover:border-primary/40"
-    >
-      {icon}
-      {label}
-    </button>
-  )
-}
 
-function GoogleMark() {
-  return (
-    <svg viewBox="0 0 24 24" className="size-4" aria-hidden="true">
-      <path
-        fill="#4285F4"
-        d="M23.5 12.3c0-.9-.1-1.5-.2-2.2H12v4.1h6.6a5.6 5.6 0 0 1-2.4 3.7v3h3.9c2.3-2.1 3.4-5.2 3.4-8.6Z"
-      />
-      <path
-        fill="#34A853"
-        d="M12 24c3.2 0 5.9-1.1 7.9-2.9l-3.9-3c-1.1.7-2.4 1.2-4 1.2a7 7 0 0 1-6.5-4.8H1.5v3.1A12 12 0 0 0 12 24Z"
-      />
-      <path fill="#FBBC05" d="M5.5 14.5a7.2 7.2 0 0 1 0-4.6V6.8H1.5a12 12 0 0 0 0 10.8l4-3.1Z" />
-      <path
-        fill="#EA4335"
-        d="M12 4.7c1.8 0 3.3.6 4.6 1.8l3.4-3.4A11.5 11.5 0 0 0 12 0 12 12 0 0 0 1.5 6.8l4 3.1A7 7 0 0 1 12 4.7Z"
-      />
-    </svg>
-  )
-}
-
-function GitHubMark() {
-  return (
-    <svg viewBox="0 0 24 24" className="size-4 fill-foreground" aria-hidden="true">
-      <path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.9 10.9c.6.1.8-.2.8-.6v-2.2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.1.1 1.7 1.2 1.7 1.2 1 1.7 2.7 1.2 3.3.9.1-.7.4-1.2.7-1.5-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.4-2.3 1.2-3.1-.1-.3-.5-1.5.1-3 0 0 1-.3 3.3 1.2a11.3 11.3 0 0 1 6 0C17.3 4.8 18.3 5 18.3 5c.6 1.5.2 2.7.1 3 .8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .4.2.7.8.6A11.5 11.5 0 0 0 23.5 12A11.5 11.5 0 0 0 12 .5Z" />
-    </svg>
-  )
-}

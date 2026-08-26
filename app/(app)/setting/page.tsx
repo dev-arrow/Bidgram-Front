@@ -15,7 +15,7 @@ export default function SettingPage() {
         description="Account details, bidding limits, and the guardrails Bidgram applies on your behalf."
       />
 
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 py-6 lg:px-8">
+      <div className="px-6 py-6 lg:px-8">
         <SettingsView />
       </div>
     </>

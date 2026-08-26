@@ -94,7 +94,7 @@ export function MobileNav() {
           </DropdownMenu>
         </div>
       </div>
-      <nav aria-label="Main" className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-1">
+      <nav aria-label="Main" className="flex flex-wrap gap-1.5">
         {items.map((item) => {
           const active = pathname === item.href
           return (

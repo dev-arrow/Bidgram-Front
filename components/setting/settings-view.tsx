@@ -431,6 +431,8 @@ export function SettingsView() {
         </div>
       </SettingsSection>
 
+      <SettingsSaveBar />
+
       {/* Danger zone */}
       <section
         aria-label="Danger zone"
@@ -456,14 +458,22 @@ export function SettingsView() {
         </div>
       </section>
 
-      {/* Sticky save bar */}
-      <div className="sticky bottom-0 -mx-6 flex items-center justify-between gap-3 border-t border-border bg-background/90 px-6 py-3 backdrop-blur-md lg:-mx-8 lg:px-8">
-        <p className="text-xs text-muted-foreground">Changes apply to bids submitted after saving.</p>
-        <Button onClick={save}>
-          <Save data-icon="inline-start" />
-          Save changes
-        </Button>
-      </div>
+    </div>
+  )
+}
+
+export function SettingsSaveBar() {
+  function save() {
+    toast.success('Settings saved', { description: 'Your preferences apply to new bids right away.' })
+  }
+
+  return (
+    <div className="flex shrink-0 items-center justify-between gap-3 border-t border-border bg-background/90 px-6 py-3 backdrop-blur-md lg:px-8">
+      <p className="text-xs text-muted-foreground">Changes apply to bids submitted after saving.</p>
+      <Button onClick={save}>
+        <Save data-icon="inline-start" />
+        Save changes
+      </Button>
     </div>
   )
 }
