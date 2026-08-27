@@ -27,7 +27,21 @@ export interface Template {
   uppercaseName?: boolean
   letterspacedName?: boolean
   style: TemplateStyle
+  /**
+   * Premium templates stay locked until bought. A purchase is a one-time
+   * unlock — the template is yours forever and never re-charges.
+   */
+  premium?: boolean
 }
+
+/** Flat one-time price to unlock any single premium template. */
+export const TEMPLATE_PRICE_USD = 1
+
+/**
+ * Premium templates the account has already bought. Purchases are permanent,
+ * so these render unlocked alongside the free set.
+ */
+export const OWNED_TEMPLATE_IDS: readonly string[] = ['tech']
 
 /**
  * Visual identities mirror the @react-pdf/renderer templates shipped with the
@@ -76,6 +90,7 @@ export const RESUME_TEMPLATES: Template[] = [
     font: 'serif',
     header: 'band',
     uppercaseName: true,
+    premium: true,
     style: { headline: '#1e3a5f', accent: '#b8860b', bg: '#ffffff', body: '#374151', onBand: '#ffffff' },
   },
   {
@@ -86,6 +101,7 @@ export const RESUME_TEMPLATES: Template[] = [
     tag: 'Engineering',
     font: 'sans',
     header: 'left',
+    premium: true,
     style: { headline: '#0a0a0a', accent: '#00d4aa', bg: '#ffffff', body: '#333333' },
   },
   {
@@ -98,6 +114,7 @@ export const RESUME_TEMPLATES: Template[] = [
     header: 'centered',
     uppercaseName: true,
     letterspacedName: true,
+    premium: true,
     style: { headline: '#2c2c2c', accent: '#c9a962', bg: '#fdfcfb', body: '#555555' },
   },
   {
@@ -109,6 +126,7 @@ export const RESUME_TEMPLATES: Template[] = [
     font: 'sans',
     header: 'band',
     uppercaseName: true,
+    premium: true,
     style: { headline: '#1a1a2e', accent: '#e94560', bg: '#ffffff', body: '#444444', onBand: '#ffffff' },
   },
   {
@@ -119,6 +137,7 @@ export const RESUME_TEMPLATES: Template[] = [
     tag: 'Professional',
     font: 'sans',
     header: 'corporate',
+    premium: true,
     style: { headline: '#003366', accent: '#003366', bg: '#ffffff', body: '#333333' },
   },
   {
@@ -129,6 +148,7 @@ export const RESUME_TEMPLATES: Template[] = [
     tag: 'Scholarly',
     font: 'serif',
     header: 'centered',
+    premium: true,
     style: { headline: '#1a1a1a', accent: '#333333', bg: '#ffffff', body: '#333333' },
   },
 ]
@@ -176,6 +196,7 @@ export const COVER_LETTER_TEMPLATES: Template[] = [
     font: 'serif',
     header: 'band',
     uppercaseName: true,
+    premium: true,
     style: { headline: '#1e3a5f', accent: '#b8860b', bg: '#ffffff', body: '#374151', onBand: '#ffffff' },
   },
   {
@@ -188,6 +209,7 @@ export const COVER_LETTER_TEMPLATES: Template[] = [
     header: 'centered',
     uppercaseName: true,
     letterspacedName: true,
+    premium: true,
     style: { headline: '#2c2c2c', accent: '#c9a962', bg: '#fdfcfb', body: '#555555' },
   },
   {
@@ -199,6 +221,7 @@ export const COVER_LETTER_TEMPLATES: Template[] = [
     font: 'sans',
     header: 'band',
     uppercaseName: true,
+    premium: true,
     style: { headline: '#1a1a2e', accent: '#e94560', bg: '#ffffff', body: '#444444', onBand: '#ffffff' },
   },
 ]

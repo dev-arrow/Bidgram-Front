@@ -37,10 +37,10 @@ export const PLANS: readonly Plan[] = [
     priceUsd: 10,
     kind: 'pack',
     priceNote: 'one-time',
-    applications: 1000,
+    applications: 2000,
     resumeTemplates: 3,
     coverLetterTemplates: 1,
-    perApplication: '$0.010',
+    perApplication: '$0.005',
   },
   {
     id: 'growth',
@@ -49,10 +49,10 @@ export const PLANS: readonly Plan[] = [
     priceUsd: 20,
     kind: 'pack',
     priceNote: 'one-time',
-    applications: 2500,
+    applications: 5000,
     resumeTemplates: 6,
     coverLetterTemplates: 3,
-    perApplication: '$0.008',
+    perApplication: '$0.004',
   },
   {
     id: 'pro',
@@ -61,10 +61,10 @@ export const PLANS: readonly Plan[] = [
     priceUsd: 50,
     kind: 'pack',
     priceNote: 'one-time',
-    applications: 7500,
+    applications: 15000,
     resumeTemplates: 10,
     coverLetterTemplates: 6,
-    perApplication: '$0.007',
+    perApplication: '$0.003',
   },
   {
     id: 'unlimited',
@@ -141,8 +141,8 @@ export const CRYPTO_ASSETS: readonly CryptoAsset[] = [
 /** The user's application balance. Credits from packs never expire. */
 export const BALANCE = {
   planId: 'growth' as PlanId,
-  granted: 2500,
-  used: 1842,
+  granted: 5000,
+  used: 3684,
   purchasedOn: 'Jun 4, 2026',
   /** Applications submitted in the last 7 days, oldest first. */
   weeklyBurn: [22, 31, 18, 44, 39, 27, 52] as readonly number[],
@@ -194,8 +194,8 @@ export const LEDGER: readonly LedgerEntry[] = [
   {
     id: 'L-3308',
     label: 'Growth pack purchased',
-    detail: '2,500 applications · paid 20.00 USDC',
-    delta: 2500,
+    detail: '5,000 applications · paid 20.00 USDC',
+    delta: 5000,
     at: 'Jun 4, 2026',
   },
 ] as const
@@ -218,7 +218,7 @@ export const INVOICES: readonly Invoice[] = [
   {
     id: 'BG-2041',
     date: 'Jun 4, 2026',
-    item: 'Growth — 2,500 applications',
+    item: 'Growth — 5,000 applications',
     amountUsd: 20,
     asset: 'USDC',
     amountCrypto: '20.00',
@@ -229,7 +229,7 @@ export const INVOICES: readonly Invoice[] = [
   {
     id: 'BG-1987',
     date: 'Mar 18, 2026',
-    item: 'Starter — 1,000 applications',
+    item: 'Starter — 2,000 applications',
     amountUsd: 10,
     asset: 'USDT',
     amountCrypto: '10.00',
@@ -240,7 +240,7 @@ export const INVOICES: readonly Invoice[] = [
   {
     id: 'BG-1902',
     date: 'Feb 2, 2026',
-    item: 'Starter — 1,000 applications',
+    item: 'Starter — 2,000 applications',
     amountUsd: 10,
     asset: 'ETH',
     amountCrypto: '0.00321',
@@ -255,7 +255,7 @@ export function quoteAmount(asset: CryptoAsset, usd: number): string {
   return (usd / asset.usdRate).toFixed(asset.precision)
 }
 
-/** "2,500" or "Unlimited" for a nullable allowance. */
+/** "5,000" or "Unlimited" for a nullable allowance. */
 export function formatAllowance(value: number | null): string {
   return value === null ? 'Unlimited' : value.toLocaleString()
 }
